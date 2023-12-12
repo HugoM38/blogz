@@ -1,6 +1,7 @@
 import 'package:blogz/database/database.dart';
-import 'package:blogz/ui/blog/blog.dart';
-import 'package:blogz/ui/blog/blog_query.dart';
+import 'package:blogz/database/blog/blog.dart';
+import 'package:blogz/database/blog/blog_query.dart';
+import 'package:blogz/ui/shared/blogz_image_picker.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
@@ -174,29 +175,8 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                 buildTextFormField(context, _tagsController, 'Tags', Icons.tag),
                 buildTextFormField(
                     context, _authorController, 'Auteur', Icons.person),
-                GestureDetector(
-                  onTap: _pickImage,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Container(
-                      height: 300,
-                      width: 300,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: _imageBytes != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: Image.memory(
-                                _imageBytes!,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : const Icon(Icons.add_a_photo, size: 50),
-                    ),
-                  ),
-                ),
+                BlogzImagePicker(
+                    pickImage: _pickImage, imageBytes: _imageBytes),
                 Padding(
                   padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
                   child: ElevatedButton(

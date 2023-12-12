@@ -1,5 +1,5 @@
 import 'package:blogz/database/database.dart';
-import 'package:blogz/ui/blog/blog.dart';
+import 'package:blogz/database/blog/blog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BlogQuery {
