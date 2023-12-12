@@ -1,3 +1,5 @@
+import 'package:blogz/database/users/user_query.dart';
+import 'package:blogz/utils/hash_password.dart';
 import 'package:flutter/material.dart';
 
 class SignInPage extends StatefulWidget {
@@ -34,12 +36,23 @@ class _SignInPageState extends State<SignInPage> {
               ),
             ),
             const SizedBox(height: 16.0),
-             Row(
+            Row(
               children: [
                 ElevatedButton(
                   onPressed: () {
                     String username = _usernameController.text;
-                    String password = _passwordController.text;
+                    String password = hashPassword(_passwordController.text);
+
+                    UserQuery().signin(username, password).then((user) {
+                      print("Connecté en temps que ${user.username}");
+                    }).catchError((error) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(error.toString()),
+                          backgroundColor: Colors.red,
+                        ),
+                      );
+                    });
                   },
                   child: const Text('Se connecter'),
                 ),
