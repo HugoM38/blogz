@@ -1,4 +1,5 @@
 import 'package:blogz/firebase_options.dart';
+import 'package:blogz/ui/account/edit_profile.dart';
 import 'package:blogz/ui/account/signin.dart';
 import 'package:blogz/ui/account/signup.dart';
 import 'package:blogz/ui/home.dart';
@@ -36,6 +37,7 @@ class Blogz extends StatelessWidget {
         '/signup': (context) => const SignUpPage(),
         '/signin': (context) => const SignInPage(),
         '/home': (context) => const HomePage(),
+        '/edit-profile': (context) => const EditProfilePage(),
       },
     );
   }
