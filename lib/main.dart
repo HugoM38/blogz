@@ -1,4 +1,6 @@
 import 'package:blogz/firebase_options.dart';
+import 'package:blogz/ui/account/signin.dart';
+import 'package:blogz/ui/account/signup.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -14,11 +16,15 @@ class Blogz extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Blogz',
-      home: MainPage(),
-      routes: {},
+      initialRoute: '/', // Route initiale
+      routes: {
+        '/': (context) => const MainPage(),
+        '/signup': (context) => const SignUpPage(),
+        '/signin': (context) => const SignInPage()
+      },
     );
   }
 }
@@ -33,8 +39,6 @@ class MainPage extends StatefulWidget {
 class _MainPageState extends State<MainPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        //On vérifie si l'utilisateur est connecté afin de le rediriger
-        body: Container());
+    return const SignInPage();
   }
 }
