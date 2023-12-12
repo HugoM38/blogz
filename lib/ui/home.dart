@@ -1,4 +1,4 @@
-import 'package:blogz/ui/blog/create_blog_page.dart';
+import 'package:blogz/ui/blog/create_blog.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:flutter/material.dart';
 
