@@ -23,7 +23,14 @@ class Blogz extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Blogz',
-      initialRoute: '/', // Route initiale
+      initialRoute: '/',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color(0xFF392F5A),
+            primary: const Color(0xFF392F5A),
+            secondary: const Color(0xFFFAFAC6)),
+        useMaterial3: true,
+      ),
       routes: {
         '/': (context) => const MainPage(),
         '/signup': (context) => const SignUpPage(),

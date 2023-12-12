@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-enum FieldType {text, dropdown, date}
+enum FieldType { text, dropdown, password, date }
 
 Widget buildTextFormField(
   BuildContext context,
@@ -17,8 +17,14 @@ Widget buildTextFormField(
 }) {
   if (fieldType == FieldType.text) {
     return TextFormField(
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      cursorColor: Theme.of(context).colorScheme.secondary,
       controller: controller,
       decoration: InputDecoration(
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
         prefixIcon: Icon(icon),
       ),
@@ -34,9 +40,33 @@ Widget buildTextFormField(
         return null;
       },
     );
-  }
-
-  else if (fieldType == FieldType.dropdown && dropdownItems != null) {
+  } else if (fieldType == FieldType.password) {
+    return TextFormField(
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      cursorColor: Theme.of(context).colorScheme.secondary,
+      controller: controller,
+      decoration: InputDecoration(
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        labelText: label,
+        prefixIcon: Icon(icon),
+      ),
+      maxLines: maxLines,
+      obscureText: true,
+      keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Veuillez entrer $label';
+        }
+        if (isNumber && int.tryParse(value) == null) {
+          return 'Veuillez entrer un nombre valide pour $label';
+        }
+        return null;
+      },
+    );
+  } else if (fieldType == FieldType.dropdown && dropdownItems != null) {
     return DropdownButtonFormField<String>(
       style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       dropdownColor: Theme.of(context).colorScheme.primary,
@@ -45,15 +75,15 @@ Widget buildTextFormField(
       icon: Icon(Icons.arrow_drop_down,
           color: Theme.of(context).colorScheme.secondary),
       decoration: InputDecoration(
+        prefixIconColor: Theme.of(context).colorScheme.secondary,
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(
-              color: Theme.of(context)
-                  .colorScheme
-                  .secondary),
+          borderSide:
+              BorderSide(color: Theme.of(context).colorScheme.secondary),
         ),
         labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
-        prefixIconColor: Theme.of(context).colorScheme.secondary,
         prefixIcon: Icon(icon),
       ),
       items: dropdownItems.map<DropdownMenuItem<String>>((String value) {
@@ -66,14 +96,20 @@ Widget buildTextFormField(
         controller.text = newValue ?? '';
       },
     );
-  } 
-
-  else if (fieldType == FieldType.date) {
+  } else if (fieldType == FieldType.date) {
     return TextFormField(
       controller: controller,
+      style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      cursorColor: Theme.of(context).colorScheme.secondary,
       decoration: InputDecoration(
+        filled: true,
+        fillColor: Theme.of(context).colorScheme.primary,
+        labelStyle: TextStyle(color: Theme.of(context).colorScheme.secondary),
         labelText: label,
-        prefixIcon: Icon(icon),
+        prefixIcon: Icon(
+          icon,
+          color: Theme.of(context).colorScheme.secondary,
+        ),
       ),
       readOnly: true,
       onTap: () async {

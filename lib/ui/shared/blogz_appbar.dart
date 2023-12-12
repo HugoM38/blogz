@@ -8,7 +8,9 @@ class BlogzAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     return AppBar(
-      title: const Text("Blogz"),
+      backgroundColor: Theme.of(context).colorScheme.secondary,
+      title: Text("Blogz",
+          style: TextStyle(color: Theme.of(context).colorScheme.primary, fontSize: 30, fontWeight: FontWeight.bold)),
       actions: actions,
     );
   }
