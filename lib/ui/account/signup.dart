@@ -2,6 +2,7 @@ import 'package:blogz/database/users/user.dart';
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/utils/check_regex.dart';
 import 'package:blogz/utils/hash_password.dart';
+import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -56,8 +57,11 @@ class _SignUpPageState extends State<SignUpPage> {
 
                 UserQuery()
                     .signup(User(username: username, password: password))
-                    .then((_) {
-                  print("Compte créé");
+                    .then((_) async {
+                  await SharedPrefs().setCurrentUser(username);
+                  if (mounted) {
+                    Navigator.pushReplacementNamed(context, "/home");
+                  }
                 }).catchError((error) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     SnackBar(

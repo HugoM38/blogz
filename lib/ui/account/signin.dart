@@ -1,5 +1,6 @@
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/utils/hash_password.dart';
+import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class SignInPage extends StatefulWidget {
@@ -43,8 +44,11 @@ class _SignInPageState extends State<SignInPage> {
                     String username = _usernameController.text;
                     String password = hashPassword(_passwordController.text);
 
-                    UserQuery().signin(username, password).then((user) {
-                      print("Connecté en temps que ${user.username}");
+                    UserQuery().signin(username, password).then((user) async {
+                      await SharedPrefs().setCurrentUser(user.username);
+                      if (mounted) {
+                        Navigator.pushReplacementNamed(context, "/home");
+                      }
                     }).catchError((error) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
