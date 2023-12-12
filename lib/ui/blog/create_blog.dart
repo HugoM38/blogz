@@ -151,7 +151,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Créer un Blog'),
+        title: const Text('Créer un Blogz'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
