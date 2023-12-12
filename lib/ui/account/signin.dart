@@ -1,4 +1,5 @@
 import 'package:blogz/database/users/user_query.dart';
+import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/utils/hash_password.dart';
 import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +18,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: const BlogzAppBar(),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
