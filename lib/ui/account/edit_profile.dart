@@ -3,7 +3,9 @@ import 'dart:typed_data';
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/ui/shared/blogz_image_picker.dart';
+import 'package:blogz/ui/shared/blogz_succes_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:blogz/utils/check_regex.dart';
 import 'package:blogz/utils/shared_prefs.dart';
@@ -152,15 +154,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
           .usernameUpdate(
               SharedPrefs().getCurrentUser()!, _usernameController.text)
           .then((_) {
-        //TODO add BlogzSuccessSnackbar
+        BlogzSuccessSnackbar(context)
+            .showSnackBar("Nom d'utilisateur modifié avec succès");
         SharedPrefs().setCurrentUser(_usernameController.text);
         Navigator.pushNamedAndRemoveUntil(
             context, "/home", (Route<dynamic> route) => false);
       }).catchError((error) {
-        //TODO: add BlogzErrorSnackbar
+        BlogzErrorSnackbar(context).showSnackBar(error.toString());
       });
     } else {
-      //TODO: add BlogzErrorSnackbar
+      BlogzErrorSnackbar(context)
+          .showSnackBar("Veuillez saisir un nom d'utilisateur");
     }
   }
 
@@ -172,17 +176,20 @@ class _EditProfilePageState extends State<EditProfilePage> {
             .passwordUpdate(SharedPrefs().getCurrentUser()!,
                 _oldPasswordController.text, _newPasswordController.text)
             .then((_) {
-          //TODO add BlogzSuccessSnackbar
+          BlogzSuccessSnackbar(context)
+              .showSnackBar("Mot de passe modifié avec succès");
           Navigator.pushNamedAndRemoveUntil(
               context, "/home", (Route<dynamic> route) => false);
         }).catchError((error) {
-          //TODO: add BlogzErrorSnackbar
+          BlogzErrorSnackbar(context).showSnackBar(error.toString());
         });
       } else {
-        //TODO: add BlogzErrorSnackbar
+        BlogzErrorSnackbar(context).showSnackBar(
+            "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule");
       }
     } else {
-      //TODO: add BlogzErrorSnackbar
+      BlogzErrorSnackbar(context)
+          .showSnackBar("Veuillez saisir l'ancien et le nouveau mot de passe");
     }
   }
 
@@ -192,7 +199,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
       imageUrl = (await uploadImage(
           _imageBytes!, SharedPrefs().getCurrentUser()!, _imageExtension))!;
     } else {
-      //TODO: add BlogzErrorSnackbar
+      BlogzErrorSnackbar(context)
+          .showSnackBar("Veuillez selectionner une image");
       return;
     }
 
@@ -200,11 +208,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         SharedPrefs().setCurrentImage(imageUrl);
       });
-      //TODO add BlogzSuccessSnackbar
+      BlogzSuccessSnackbar(context).showSnackBar("Image modifiée avec succès");
       Navigator.pushNamedAndRemoveUntil(
           context, "/home", (Route<dynamic> route) => false);
     }).catchError((error) {
-      //TODO add BlogzErrorSnackbar
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
     });
   }
 
@@ -218,14 +226,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
           _imageExtension = path.extension(pickedFile.path);
         });
       }
-    } catch (error) {
+    } catch (_) {
       if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Erreur lors de la sélection de l'image"),
-            backgroundColor: Colors.red,
-          ),
-        );
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Erreur lors de la sélection de l'image");
       }
     }
   }

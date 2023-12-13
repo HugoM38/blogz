@@ -62,23 +62,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      appBar: AppBar(
-        title: BlogzAppBar(actions: getAppBarActions()),
-        actions: [
-          Padding(
-            padding: EdgeInsets.only(
-                right: MediaQuery.of(context).size.width * 0.05),
-            child: SizedBox(
-              width: MediaQuery.of(context).size.width * 0.50,
-              child: BlogzSearchBar(
-                hintText: "Rechercher un blogz",
-                searchController: searchController,
-                onSearchChanged: _filterBlogz,
-              ),
-            ),
-          ),
-        ],
-      ),
+      appBar: BlogzAppBar(actions: getAppBarActions(), displayLogo: true,),
       body: blogs.isEmpty
           ? Center(
               child: Text(
@@ -153,6 +137,18 @@ class _HomePageState extends State<HomePage> {
   List<Widget> getAppBarActions() {
     String? imageUrl = SharedPrefs().getCurrentImage();
     return [
+      Padding(
+        padding:
+            EdgeInsets.only(right: MediaQuery.of(context).size.width * 0.05),
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width * 0.50,
+          child: BlogzSearchBar(
+            hintText: "Rechercher un blogz",
+            searchController: searchController,
+            onSearchChanged: _filterBlogz,
+          ),
+        ),
+      ),
       Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlogzButton(text: "Se déconnecter", onPressed: logout),

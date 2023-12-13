@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class BlogzSuccesSnackbar {
+class BlogzSuccessSnackbar {
   final BuildContext context;
 
-  BlogzSuccesSnackbar(this.context);
+  BlogzSuccessSnackbar(this.context);
 
   void showSnackBar(String message) {
       ScaffoldMessenger.of(context).showSnackBar(
