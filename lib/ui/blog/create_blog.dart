@@ -1,7 +1,9 @@
 import 'package:blogz/database/database.dart';
 import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/database/blog/blog_query.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/ui/shared/blogz_image_picker.dart';
+import 'package:blogz/ui/shared/blogz_succes_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
@@ -18,7 +20,6 @@ class CreateBlogPage extends StatefulWidget {
 
 class _CreateBlogPageState extends State<CreateBlogPage> {
   final TextEditingController _titleController = TextEditingController();
-  final TextEditingController _dateController = TextEditingController();
   final TextEditingController _summaryController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
@@ -39,13 +40,9 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         });
       }
     } catch (error) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Erreur lors de la sélection de l'image"),
-            backgroundColor: Colors.red,
-          ),
-        );
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Erreur lors de la sélection de l'image");
       }
     }
   }
@@ -81,23 +78,56 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         return null;
       });
     } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Vous n'avez mis aucune image"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Vous n'avez mis aucune image");
+      }
       return;
     }
 
     if (_titleController.text.isEmpty || _authorController.text.isEmpty) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text("Veuillez saisir au moins un titre un auteur"),
-            backgroundColor: Colors.red,
-          ),
-        );
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Veuillez saisir au moins un titre un auteur");
+      }
+      return;
+    }
+
+    if (_titleController.text.isEmpty) {
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar("Veuillez saisir un titre");
+      }
+      return;
+    }
+
+    if (_authorController.text.isEmpty) {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Veuillez saisir un nom d'auteur");
+      }
+      return;
+    }
+
+    if (_summaryController.text.isEmpty) {
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar("Veuillez saisir un résumé");
+      }
+      return;
+    }
+
+    if (_contentController.text.isEmpty) {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Veuillez saisir le contenu du blog");
+      }
+      return;
+    }
+
+    if (_imageBytes == null) {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Veuillez saisir le contenu du blog");
+        ("Veuillez sélectionner une image");
       }
       return;
     }
@@ -108,14 +138,11 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
 
     DateTime? publishedDate;
     try {
-      publishedDate = DateTime.parse(_dateController.text);
+      publishedDate = DateTime.now();
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text("Format de date invalide"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar("Format de date invalide");
+      }
       return;
     }
 
@@ -130,23 +157,19 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       tags: tags,
     );
     BlogQuery().addBlog(newBlog).then((_) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Le Blogz a été ajouté avec succès!'),
-          backgroundColor: Colors.green,
-        ),
-      );
+      if(mounted) {
+        BlogzSuccesSnackbar(context).showSnackBar("Le Blogz a été ajouté avec succés");
+      }
       // BookManager().books.add(newBook); Singleton en attente ??
       Navigator.pop(context);
     }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error),
-          backgroundColor: Colors.red,
-        ),
-      );
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar(error);
+      }
     });
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -164,9 +187,6 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
               children: <Widget>[
                 buildTextFormField(
                     context, _titleController, 'Titre', Icons.title),
-                buildTextFormField(context, _dateController, 'Date de création',
-                    Icons.calendar_today,
-                    fieldType: FieldType.date, initialDate: DateTime.now()),
                 buildTextFormField(context, _summaryController, 'Sommaires',
                     Icons.description),
                 buildTextFormField(
