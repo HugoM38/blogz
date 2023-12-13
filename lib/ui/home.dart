@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                               height: MediaQuery.of(context).size.height * 0.3,
                               decoration: BoxDecoration(
                                 image: DecorationImage(
-                                  image: NetworkImage(blog.imageUrl ?? ''),
+                                  image: NetworkImage(blog.imageUrl!),
                                   fit: BoxFit.cover,
                                 ),
                                 borderRadius: BorderRadius.circular(4.0),

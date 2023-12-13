@@ -101,4 +101,17 @@ class UserQuery {
           "Une erreur est survenue lors du changement de nom d'utilisateur");
     }
   }
+
+  Future<String?> getImageByUsername(String username) async {
+    QuerySnapshot query =
+        await usersCollection.where('username', isEqualTo: username).get();
+    if (query.docs.isNotEmpty) {
+      Map<String, dynamic> user =
+          query.docs.first.data() as Map<String, dynamic>;
+      return User.fromMap(user).imageUrl;
+    } else {
+      throw Exception(
+          "Erreur lors de la récupération de l'image de profil de l'utilisateur");
+    }
+  }
 }
