@@ -62,65 +62,80 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      appBar: BlogzAppBar(actions: getAppBarActions(), displayLogo: true,),
+      appBar: BlogzAppBar(
+        actions: getAppBarActions(),
+        displayLogo: true,
+      ),
       body: blogs.isEmpty
           ? Center(
               child: Text(
               'Aucun blog disponible.',
               style: TextStyle(color: Theme.of(context).colorScheme.secondary),
             ))
-          : GridView.builder(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 4,
-                childAspectRatio: 1,
-              ),
-              itemCount: filteredBlogs.length,
-              itemBuilder: (context, index) {
-                final blog = filteredBlogs[index];
-                return InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/blog", arguments: blog);
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.all(8.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Container(
-                            decoration: BoxDecoration(
-                              image: DecorationImage(
-                                image: NetworkImage(blog.imageUrl ?? ''),
-                                fit: BoxFit.cover,
-                              ),
-                              borderRadius: BorderRadius.circular(4.0),
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            blog.title,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary,
-                                fontWeight: FontWeight.bold),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                          child: Text(
-                            blog.summary,
-                            style: TextStyle(
-                                color: Theme.of(context).colorScheme.secondary),
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ],
-                    ),
+          : Padding(
+              padding: const EdgeInsets.fromLTRB(48, 24, 48, 24),
+              child: GridView.builder(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 4,
+                    childAspectRatio: 3 / 3.5,
                   ),
-                );
-              }),
+                  itemCount: filteredBlogs.length,
+                  itemBuilder: (context, index) {
+                    final blog = filteredBlogs[index];
+                    return InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(context, "/blog",
+                            arguments: blog.uuid);
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.all(8.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            Container(
+                              height: MediaQuery.of(context).size.height * 0.3,
+                              decoration: BoxDecoration(
+                                image: DecorationImage(
+                                  image: NetworkImage(blog.imageUrl ?? ''),
+                                  fit: BoxFit.cover,
+                                ),
+                                borderRadius: BorderRadius.circular(4.0),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                blog.title,
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14),
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 2,
+                              ),
+                            ),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Text(
+                                blog.summary,
+                                style: TextStyle(
+                                    color:
+                                        Theme.of(context).colorScheme.secondary,
+                                    fontSize: 12),
+                                textAlign: TextAlign.left,
+                                overflow: TextOverflow.ellipsis,
+                                maxLines: 5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  }),
+            ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
