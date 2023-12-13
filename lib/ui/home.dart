@@ -2,6 +2,7 @@ import 'package:blogz/database/blog/blog_query.dart';
 import 'package:blogz/ui/blog/create_blog.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_searchbar.dart';
 import 'package:flutter/material.dart';
 
 import '../database/blog/blog.dart';
@@ -17,14 +18,24 @@ class _HomePageState extends State<HomePage> {
   bool isBlogsLoaded = false;
   List<Blog> blogs = [];
   List<Blog> filteredBlogs = [];
+  final TextEditingController searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _loadUsers();
+    _loadBlogz();
   }
 
-  Future<void> _loadUsers() async {
+  void _filterBlogz(String searchText) {
+    final searchLower = searchText.toLowerCase();
+    setState(() {
+      filteredBlogs = blogs.where((blog){
+          return blog.title.toLowerCase().contains(searchLower);
+      }).toList();
+    });
+  }
+
+  Future<void> _loadBlogz() async {
     if (!isBlogsLoaded) {
       try {
         List<Blog> loadedBlogs = await BlogQuery().getBlogs();
@@ -51,6 +62,18 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: BlogzAppBar(actions: getAppBarActions()),
+        actions: [Padding(
+          padding: EdgeInsets.only(
+              right: MediaQuery.of(context).size.width * 0.05),
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.50,
+            child: BlogzSearchBar(
+              hintText: "Rechercher un blogz",
+              searchController: searchController,
+              onSearchChanged: _filterBlogz,
+            ),
+          ),
+        ),],
       ),
       body: blogs.isEmpty
           ? Center(
@@ -63,15 +86,15 @@ class _HomePageState extends State<HomePage> {
                 crossAxisCount: 2,
                 childAspectRatio: 0.7,
               ),
-              itemCount: blogs.length,
+              itemCount: filteredBlogs.length,
               itemBuilder: (context, index) {
                 {
                   return Card(
                     margin: const EdgeInsets.all(8.0),
                     elevation: 4.0,
                     child: ListTile(
-                      title: Text(blogs[index].title!),
-                      subtitle: Text(blogs[index].summary!),
+                      title: Text(filteredBlogs[index].title!),
+                      subtitle: Text(filteredBlogs[index].summary!),
                       leading: const Icon(Icons.credit_card),
                       onTap: () {
                         // Action à effectuer lorsque la carte est cliquée
