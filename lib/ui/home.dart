@@ -30,8 +30,8 @@ class _HomePageState extends State<HomePage> {
   void _filterBlogz(String searchText) {
     final searchLower = searchText.toLowerCase();
     setState(() {
-      filteredBlogs = blogs.where((blog){
-          return blog.title.toLowerCase().contains(searchLower);
+      filteredBlogs = blogs.where((blog) {
+        return blog.title.toLowerCase().contains(searchLower);
       }).toList();
     });
   }
@@ -61,20 +61,23 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.primary,
       appBar: AppBar(
         title: BlogzAppBar(actions: getAppBarActions()),
-        actions: [Padding(
-          padding: EdgeInsets.only(
-              right: MediaQuery.of(context).size.width * 0.05),
-          child: SizedBox(
-            width: MediaQuery.of(context).size.width * 0.50,
-            child: BlogzSearchBar(
-              hintText: "Rechercher un blogz",
-              searchController: searchController,
-              onSearchChanged: _filterBlogz,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(
+                right: MediaQuery.of(context).size.width * 0.05),
+            child: SizedBox(
+              width: MediaQuery.of(context).size.width * 0.50,
+              child: BlogzSearchBar(
+                hintText: "Rechercher un blogz",
+                searchController: searchController,
+                onSearchChanged: _filterBlogz,
+              ),
             ),
           ),
-        ),],
+        ],
       ),
       body: blogs.isEmpty
           ? Center(
@@ -84,26 +87,55 @@ class _HomePageState extends State<HomePage> {
             ))
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.7,
+                crossAxisCount: 4,
+                childAspectRatio: 1,
               ),
               itemCount: filteredBlogs.length,
               itemBuilder: (context, index) {
-                {
-                  return Card(
+                final blog = filteredBlogs[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.pushNamed(context, "/blog", arguments: blog.uuid);
+                  },
+                  child: Container(
                     margin: const EdgeInsets.all(8.0),
-                    elevation: 4.0,
-                    child: ListTile(
-                      title: Text(filteredBlogs[index].title!),
-                      subtitle: Text(filteredBlogs[index].summary!),
-                      leading: const Icon(Icons.credit_card),
-                      onTap: () {
-                        // Action à effectuer lorsque la carte est cliquée
-                        Navigator.pushNamed(context, "/blog", arguments: blogs[index].uuid );
-                      },
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(blog.imageUrl ?? ''),
+                                fit: BoxFit.cover,
+                              ),
+                              borderRadius: BorderRadius.circular(4.0),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            blog.title,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary,
+                                fontWeight: FontWeight.bold),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          child: Text(
+                            blog.summary,
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.secondary),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                }
+                  ),
+                );
               }),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
