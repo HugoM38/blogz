@@ -197,7 +197,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
     String imageUrl;
     if (_imageBytes != null) {
       imageUrl = (await uploadImage(
-          _imageBytes!, SharedPrefs().getCurrentUser()!, _imageExtension))!;
+              _imageBytes!, SharedPrefs().getCurrentUser()!, _imageExtension)
+          .catchError((error) {
+        BlogzErrorSnackbar(context).showSnackBar(error.toString());
+        return null;
+      }))!;
     } else {
       BlogzErrorSnackbar(context)
           .showSnackBar("Veuillez selectionner une image");

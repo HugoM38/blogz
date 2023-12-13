@@ -1,10 +1,10 @@
-import 'package:blogz/database/database.dart';
 import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/database/blog/blog_query.dart';
 import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/ui/shared/blogz_image_picker.dart';
 import 'package:blogz/ui/shared/blogz_succes_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
+import 'package:blogz/utils/upload_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
 import 'package:image_picker/image_picker.dart';
@@ -28,111 +28,6 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
   Uint8List? _imageBytes;
   String? _imageExtension;
   final ImagePicker _picker = ImagePicker();
-
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        final bytes = await pickedFile.readAsBytes();
-        setState(() {
-          _imageBytes = bytes;
-          _imageExtension = path.extension(pickedFile.path);
-        });
-      }
-    } catch (error) {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Erreur lors de la sélection de l'image");
-      }
-    }
-  }
-
-  Future<String?> uploadImage(Uint8List imageBytes, String fileName) async {
-    try {
-      String fileNameWithExtension = fileName + (_imageExtension ?? '.jpg');
-
-      final ref = Database()
-          .firebaseStorage
-          .ref()
-          .child('images/$fileNameWithExtension');
-
-      final result = await ref.putData(imageBytes);
-
-      return await result.ref.getDownloadURL();
-    } catch (_) {
-      throw Exception("Envoie de l'image impossible");
-    }
-  }
-
-  void _createBlog() async {
-    String? imageUrl;
-    final String uuid = const Uuid().v4();
-    if (_imageBytes != null) {
-      imageUrl = await uploadImage(_imageBytes!, uuid).catchError((error) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(error.toString()),
-            backgroundColor: Colors.red,
-          ),
-        );
-        return null;
-      });
-    } else {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Vous n'avez mis aucune image");
-      }
-      return;
-    }
-
-    if (_titleController.text.isEmpty ||
-        _authorController.text.isEmpty ||
-        _contentController.text.isEmpty ||
-        _summaryController.text.isEmpty) {
-      if (mounted) {
-        BlogzErrorSnackbar(context).showSnackBar(
-            "Veuillez saisir au moins un titre, un auteur, un résumé et le contenu du blogz");
-      }
-      return;
-    }
-
-    List<String>? tags = _tagsController.text.isNotEmpty
-        ? _tagsController.text.split(',')
-        : null;
-
-    DateTime? publishedDate;
-    try {
-      publishedDate = DateTime.now();
-    } catch (e) {
-      if (mounted) {
-        BlogzErrorSnackbar(context).showSnackBar("Format de date invalide");
-      }
-      return;
-    }
-
-    Blog newBlog = Blog(
-      uuid: uuid,
-      title: _titleController.text,
-      author: _authorController.text,
-      summary: _summaryController.text,
-      imageUrl: imageUrl,
-      content: _contentController.text,
-      publishedDate: publishedDate,
-      tags: tags,
-    );
-    BlogQuery().addBlog(newBlog).then((_) {
-      if (mounted) {
-        BlogzSuccessSnackbar(context)
-            .showSnackBar("Le Blogz a été ajouté avec succés");
-      }
-      // BookManager().books.add(newBook); Singleton en attente ??
-      Navigator.pop(context);
-    }).catchError((error) {
-      if (mounted) {
-        BlogzErrorSnackbar(context).showSnackBar(error);
-      }
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -173,5 +68,81 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        setState(() {
+          _imageBytes = bytes;
+          _imageExtension = path.extension(pickedFile.path);
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Erreur lors de la sélection de l'image");
+      }
+    }
+  }
+
+  void _createBlog() async {
+    String? imageUrl;
+    final String uuid = const Uuid().v4();
+    if (_imageBytes != null) {
+      imageUrl = await uploadImage(_imageBytes!, uuid, _imageExtension)
+          .catchError((error) {
+        BlogzErrorSnackbar(context).showSnackBar(error.toString());
+        return null;
+      });
+    } else {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Vous n'avez mis aucune image");
+      }
+      return;
+    }
+
+    if (_titleController.text.isEmpty ||
+        _authorController.text.isEmpty ||
+        _contentController.text.isEmpty ||
+        _summaryController.text.isEmpty) {
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar(
+            "Veuillez saisir au moins un titre, un auteur, un résumé et le contenu du blogz");
+      }
+      return;
+    }
+
+    List<String>? tags = _tagsController.text.isNotEmpty
+        ? _tagsController.text.split(',')
+        : null;
+
+    Blog blog = Blog(
+      uuid: uuid,
+      title: _titleController.text,
+      author: _authorController.text,
+      summary: _summaryController.text,
+      imageUrl: imageUrl,
+      content: _contentController.text,
+      publishedDate: DateTime.now(),
+      tags: tags,
+    );
+
+    BlogQuery()
+        .addBlog(blog)
+        .then((_) {
+      if (mounted) {
+        BlogzSuccessSnackbar(context)
+            .showSnackBar("Le Blogz a été ajouté avec succés");
+      }
+      Navigator.pop(context, blog);
+    }).catchError((error) {
+      if (mounted) {
+        BlogzErrorSnackbar(context).showSnackBar(error);
+      }
+    });
   }
 }

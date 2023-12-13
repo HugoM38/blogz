@@ -56,6 +56,9 @@ class _HomePageState extends State<HomePage> {
         }
       }
     }
+    setState(() {
+      filteredBlogs = blogs;
+    });
   }
 
   @override
@@ -137,11 +140,18 @@ class _HomePageState extends State<HomePage> {
                   }),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
+        onPressed: () async {
+          Blog? blog = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CreateBlogPage()),
           );
+
+          setState(() {
+            if (blog != null) {
+              blogs.add(blog);
+              _loadBlogz();
+            }
+          });
         },
         child: const Icon(Icons.add),
       ),
