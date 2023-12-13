@@ -85,49 +85,13 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       return;
     }
 
-    if (_titleController.text.isEmpty || _authorController.text.isEmpty) {
+    if (_titleController.text.isEmpty ||
+        _authorController.text.isEmpty ||
+        _contentController.text.isEmpty ||
+        _summaryController.text.isEmpty) {
       if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Veuillez saisir au moins un titre un auteur");
-      }
-      return;
-    }
-
-    if (_titleController.text.isEmpty) {
-      if (mounted) {
-        BlogzErrorSnackbar(context).showSnackBar("Veuillez saisir un titre");
-      }
-      return;
-    }
-
-    if (_authorController.text.isEmpty) {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Veuillez saisir un nom d'auteur");
-      }
-      return;
-    }
-
-    if (_summaryController.text.isEmpty) {
-      if (mounted) {
-        BlogzErrorSnackbar(context).showSnackBar("Veuillez saisir un résumé");
-      }
-      return;
-    }
-
-    if (_contentController.text.isEmpty) {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Veuillez saisir le contenu du blog");
-      }
-      return;
-    }
-
-    if (_imageBytes == null) {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Veuillez saisir le contenu du blog");
-        ("Veuillez sélectionner une image");
+        BlogzErrorSnackbar(context).showSnackBar(
+            "Veuillez saisir au moins un titre, un auteur, un résumé et le contenu du blogz");
       }
       return;
     }
@@ -157,8 +121,9 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       tags: tags,
     );
     BlogQuery().addBlog(newBlog).then((_) {
-      if(mounted) {
-        BlogzSuccesSnackbar(context).showSnackBar("Le Blogz a été ajouté avec succés");
+      if (mounted) {
+        BlogzSuccessSnackbar(context)
+            .showSnackBar("Le Blogz a été ajouté avec succés");
       }
       // BookManager().books.add(newBook); Singleton en attente ??
       Navigator.pop(context);
@@ -168,8 +133,6 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       }
     });
   }
-
-
 
   @override
   Widget build(BuildContext context) {
