@@ -8,6 +8,8 @@ import 'package:blogz/utils/shared_prefs.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
+import 'database/blog/blog.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
@@ -42,11 +44,11 @@ class Blogz extends StatelessWidget {
       },
       onGenerateRoute: (settings) {
         if (settings.name == '/blog') {
-          final blogUuid = settings.arguments;
-          if (blogUuid is String) {
+          final blog = settings.arguments;
+          if (blog is Blog) {
             return MaterialPageRoute(
               builder: (context) {
-                return ReadBlogPage(uuid: blogUuid);
+                return ReadBlogPage(blog: blog);
               },
             );
           }

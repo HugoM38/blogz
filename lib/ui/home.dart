@@ -95,7 +95,7 @@ class _HomePageState extends State<HomePage> {
                 final blog = filteredBlogs[index];
                 return InkWell(
                   onTap: () {
-                    Navigator.pushNamed(context, "/blog", arguments: blog.uuid);
+                    Navigator.pushNamed(context, "/blog", arguments: blog);
                   },
                   child: Container(
                     margin: const EdgeInsets.all(8.0),
