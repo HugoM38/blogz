@@ -1,5 +1,6 @@
 import 'package:blogz/database/blog/blog_query.dart';
 import 'package:blogz/ui/blog/create_blog.dart';
+import 'package:blogz/ui/blog/read_blog.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/ui/shared/blogz_searchbar.dart';
@@ -87,8 +88,11 @@ class _HomePageState extends State<HomePage> {
                     final blog = filteredBlogs[index];
                     return InkWell(
                       onTap: () {
-                        Navigator.pushNamed(context, "/blog",
-                            arguments: blog.uuid);
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    ReadBlogPage(blog: blog)));
                       },
                       child: Container(
                         margin: const EdgeInsets.all(8.0),

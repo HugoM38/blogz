@@ -1,10 +1,11 @@
 import 'package:blogz/database/Comment/comment.dart';
 import 'package:blogz/database/Comment/comment_query.dart';
+import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 class ReadBlogPage extends StatefulWidget {
-  var blog;
+  Blog blog;
   ReadBlogPage({super.key, required this.blog});
 
   @override
@@ -12,7 +13,6 @@ class ReadBlogPage extends StatefulWidget {
 }
 
 class _ReadBlogPageState extends State<ReadBlogPage> {
-
   @override
   final TextEditingController _textEditingController = TextEditingController();
 
@@ -38,7 +38,11 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                var comment = Comment(content: _textEditingController.text, author: SharedPrefs().getCurrentUser()!, uuid: widget.blog.uuid, date: DateTime.now());
+                var comment = Comment(
+                    content: _textEditingController.text,
+                    author: SharedPrefs().getCurrentUser()!,
+                    uuid: widget.blog.uuid,
+                    date: DateTime.now());
                 CommentQuery().addComment(comment);
               },
               child: const Text('Envoyer'),

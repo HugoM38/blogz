@@ -1,9 +1,12 @@
 import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/database/blog/blog_query.dart';
+import 'package:blogz/ui/shared/blogz_appbar.dart';
+import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/ui/shared/blogz_image_picker.dart';
 import 'package:blogz/ui/shared/blogz_succes_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
+import 'package:blogz/utils/shared_prefs.dart';
 import 'package:blogz/utils/upload_image.dart';
 import 'package:flutter/material.dart';
 import 'dart:typed_data';
@@ -32,37 +35,68 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Créer un Blogz'),
-      ),
+      backgroundColor: Theme.of(context).colorScheme.primary,
+      appBar: const BlogzAppBar(),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(8.0),
-        child: Card(
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                buildTextFormField(
-                    context, _titleController, 'Titre', Icons.title),
-                buildTextFormField(context, _summaryController, 'Sommaires',
-                    Icons.description),
-                buildTextFormField(
-                    context, _contentController, 'Contenu', Icons.text_fields,
-                    maxLines: 5),
-                buildTextFormField(context, _tagsController, 'Tags', Icons.tag),
-                buildTextFormField(
-                    context, _authorController, 'Auteur', Icons.person),
-                BlogzImagePicker(
-                    pickImage: _pickImage, imageBytes: _imageBytes),
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
-                  child: ElevatedButton(
-                    onPressed: _createBlog,
-                    child: const Text('Soumettre'),
-                  ),
+        child: Center(
+          child: SizedBox(
+            width: MediaQuery.of(context).size.width * 0.5,
+            child: Card(
+              color: Theme.of(context).colorScheme.secondary,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Text(
+                        "Créer mon blogz",
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.primary,
+                            fontSize: 30,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildTextFormField(
+                          context, _titleController, 'Titre', Icons.title),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildTextFormField(context, _summaryController, 'Sommaires',
+                          Icons.description),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildTextFormField(context, _contentController, 'Contenu',
+                          Icons.text_fields,
+                          maxLines: 5),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildTextFormField(
+                          context, _tagsController, 'Tags', Icons.tag),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: buildTextFormField(
+                          context, _authorController, 'Auteur', Icons.person),
+                    ),
+                    BlogzImagePicker(
+                        pickImage: _pickImage, imageBytes: _imageBytes, size: MediaQuery.of(context).size.width * 0.15,),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
+                      child: BlogzButton(
+                        onPressed: _createBlog,
+                        text: 'Soumettre',
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ),
@@ -106,12 +140,11 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
     }
 
     if (_titleController.text.isEmpty ||
-        _authorController.text.isEmpty ||
         _contentController.text.isEmpty ||
         _summaryController.text.isEmpty) {
       if (mounted) {
         BlogzErrorSnackbar(context).showSnackBar(
-            "Veuillez saisir au moins un titre, un auteur, un résumé et le contenu du blogz");
+            "Veuillez saisir au moins un titre, un résumé et le contenu du blogz");
       }
       return;
     }
@@ -123,7 +156,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
     Blog blog = Blog(
       uuid: uuid,
       title: _titleController.text,
-      author: _authorController.text,
+      author: SharedPrefs().getCurrentUser()!,
       summary: _summaryController.text,
       imageUrl: imageUrl,
       content: _contentController.text,
@@ -131,9 +164,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       tags: tags,
     );
 
-    BlogQuery()
-        .addBlog(blog)
-        .then((_) {
+    BlogQuery().addBlog(blog).then((_) {
       if (mounted) {
         BlogzSuccessSnackbar(context)
             .showSnackBar("Le Blogz a été ajouté avec succés");
