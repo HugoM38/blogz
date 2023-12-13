@@ -108,6 +108,9 @@ class _SignInPageState extends State<SignInPage> {
 
     UserQuery().signin(username, password).then((user) async {
       await SharedPrefs().setCurrentUser(user.username);
+      if (user.imageUrl != null) {
+        await SharedPrefs().setCurrentImage(user.imageUrl!);
+      }
       if (mounted) {
         Navigator.pushReplacementNamed(context, "/home");
       }

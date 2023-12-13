@@ -3,6 +3,7 @@ import 'package:blogz/ui/blog/create_blog.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/ui/shared/blogz_searchbar.dart';
+import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
 
 import '../database/blog/blog.dart';
@@ -118,12 +119,41 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> getAppBarActions() {
+    String? imageUrl = SharedPrefs().getCurrentImage();
     return [
-      BlogzButton(
-          text: "Modifier mon profil",
-          onPressed: () async {
-            Navigator.pushNamed(context, "/edit-profile");
-          })
+      Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: BlogzButton(text: "Se déconnecter", onPressed: logout),
+      ),
+      imageUrl != null
+          ? Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: GestureDetector(
+                  onTap: goToProfile,
+                  child: ClipOval(
+                      child: Image.network(
+                    imageUrl,
+                    fit: BoxFit.cover,
+                  ))),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: IconButton(
+                  onPressed: goToProfile, icon: const Icon(Icons.person)),
+            ),
     ];
+  }
+
+  Future logout() async {
+    await SharedPrefs().removeCurrentImage();
+    await SharedPrefs().removeCurrentUser();
+    if (context.mounted) {
+      Navigator.pushReplacementNamed(context, "/signin");
+    }
+  }
+
+  Future goToProfile() async {
+    await Navigator.pushNamed(context, "/edit-profile");
+    setState(() {}); // Reload page to display image
   }
 }

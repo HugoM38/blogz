@@ -2,6 +2,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPrefs {
   final String _userKey = 'currentUser';
+  final String _imageKey = 'currentImage';
   late SharedPreferences prefs;
 
   SharedPrefs._privateConstructor();
@@ -27,5 +28,18 @@ class SharedPrefs {
 
   Future<void> removeCurrentUser() async {
     await prefs.remove(_userKey);
+  }
+
+    String? getCurrentImage() {
+    return prefs.getString(_imageKey);
+  }
+
+
+  Future<void> setCurrentImage(String value) async {
+    await prefs.setString(_imageKey, value);
+  }
+
+  Future<void> removeCurrentImage() async {
+    await prefs.remove(_imageKey);
   }
 }
