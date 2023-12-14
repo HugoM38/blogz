@@ -4,6 +4,7 @@ import 'package:blogz/database/comment/comment_query.dart';
 import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -90,7 +91,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                     border: Border.all(
                                       color:
                                           Theme.of(context).colorScheme.primary,
-                                      width: 2.0,
+                                      width: 1.0,
                                     ),
                                   ),
                                   child: ClipOval(
@@ -207,7 +208,14 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
         author: SharedPrefs().getCurrentUser()!,
         uuid: widget.blog.uuid,
         date: DateTime.now());
-    await CommentQuery().addComment(comment);
+    CommentQuery().addComment(comment).then((_) {
+      setState(() {
+        comments.insert(0, comment);
+        _textEditingController.text = "";
+      });
+    }).catchError((error) {
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
+    });
   }
 
   Future loadAuthorImage() async {
@@ -215,46 +223,87 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
   }
 
   Widget buildRowTemplate(Comment comment, Key key) {
-    return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Card(
+    return FutureBuilder(
+      future: UserQuery().getImageByUsername(comment.author),
+      builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
+        String? commentImageUrl = snapshot.data;
+
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Card(
             color: Theme.of(context).colorScheme.primary,
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              mainAxisAlignment: MainAxisAlignment.start,
               key: key,
               children: [
                 Padding(
                   padding: const EdgeInsets.all(8.0),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.secondary,
+                        width: 1.0,
+                      ),
+                    ),
+                    child: ClipOval(
+                      child: commentImageUrl != null
+                          ? Image.network(
+                              commentImageUrl,
+                              width: 24.0,
+                              height: 24.0,
+                              fit: BoxFit.cover,
+                            )
+                          : Icon(
+                              Icons.person,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      child: Text(
-                        comment.author,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
-                      )),
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: Text(
+                      comment.author,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 8, bottom: 8),
                   child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.55,
-                      child: Text(
-                        comment.content,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                            color: Theme.of(context).colorScheme.secondary),
-                      )),
+                    width: MediaQuery.of(context).size.width * 0.50,
+                    child: Text(
+                      comment.content,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
                 ),
                 Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.1,
-                        child: Text(
-                          DateFormat("dd/MM/yyyy HH:mm").format(comment.date),
-                          style: TextStyle(
-                              color: Theme.of(context).colorScheme.secondary),
-                        ))),
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    child: Text(
+                      DateFormat("dd/MM/yyyy HH:mm").format(comment.date),
+                      style: TextStyle(
+                        color: Theme.of(context).colorScheme.secondary,
+                      ),
+                    ),
+                  ),
+                ),
               ],
-            )));
+            ),
+          ),
+        );
+      },
+    );
   }
 }
