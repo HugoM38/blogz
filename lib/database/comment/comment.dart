@@ -13,19 +13,19 @@ class Comment {
 
   Map<String, dynamic> toMap() {
     return {
-      'uuid': uuid,
       'content': content,
       'author': author,
-      'date': date,
+      'uuid': uuid,
+      'date': date.toString(),
     };
   }
 
   static Comment fromMap(Map<String, dynamic> map, String id) {
     return Comment(
-        uuid: map['uuid'],
         content: map['content'],
         author: map['author'],
-        date: map['date']
+        uuid: map['uuid'],
+        date: DateTime.parse(map['date'])
     );
   }
 }

@@ -1,8 +1,8 @@
+import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/database/comment/comment.dart';
 import 'package:blogz/database/comment/comment_query.dart';
 import 'package:blogz/database/blog/blog.dart';
 import 'package:blogz/database/users/user_query.dart';
-import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:blogz/utils/shared_prefs.dart';
@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 
 class ReadBlogPage extends StatefulWidget {
   final Blog blog;
+
   const ReadBlogPage({super.key, required this.blog});
 
   @override
@@ -18,13 +19,23 @@ class ReadBlogPage extends StatefulWidget {
 }
 
 class _ReadBlogPageState extends State<ReadBlogPage> {
+  List<Comment> comments = [];
   final TextEditingController _textEditingController = TextEditingController();
   String? authorImageUrl;
 
   @override
   void initState() {
     loadAuthorImage();
+    _loadComment();
     super.initState();
+  }
+
+  Future<void> _loadComment() async {
+    List<Comment> loadedComments =
+        await CommentQuery().getCommentFromBlogz(widget.blog.uuid);
+    setState(() {
+      comments = loadedComments;
+    });
   }
 
   @override
@@ -144,6 +155,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                   child: Card(
                     color: Theme.of(context).colorScheme.secondary,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -168,6 +180,15 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                             ),
                           ],
                         ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height * 0.4,
+                          child: ListView.builder(
+                              itemCount: comments.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                return buildRowTemplate(
+                                    comments[index], Key(index.toString()));
+                              }),
+                        )
                       ],
                     ),
                   ),
@@ -191,5 +212,49 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
 
   Future loadAuthorImage() async {
     authorImageUrl = await UserQuery().getImageByUsername(widget.blog.author);
+  }
+
+  Widget buildRowTemplate(Comment comment, Key key) {
+    return Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+            color: Theme.of(context).colorScheme.primary,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              key: key,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      child: Text(
+                        comment.author,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      )),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 8, bottom: 8),
+                  child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.55,
+                      child: Text(
+                        comment.content,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                      )),
+                ),
+                Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.1,
+                        child: Text(
+                          DateFormat("dd/MM/yyyy HH:mm").format(comment.date),
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.secondary),
+                        ))),
+              ],
+            )));
   }
 }

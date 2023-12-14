@@ -11,7 +11,10 @@ class CommentQuery {
   }
 
   Future<List<Comment>> getCommentFromBlogz(String uuid) async {
-    QuerySnapshot query = await commentCollection.where('uuid', isEqualTo: uuid).get();
+    QuerySnapshot query = await commentCollection
+        .where('uuid', isEqualTo: uuid)
+        .orderBy('date', descending: true)
+        .get();
     return query.docs
         .map((doc) => Comment.fromMap(doc.data() as Map<String, dynamic>, doc.id))
         .toList();
