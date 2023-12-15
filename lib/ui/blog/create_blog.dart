@@ -162,6 +162,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
       content: _contentController.text,
       publishedDate: DateTime.now(),
       tags: tags,
+      likes: []
     );
 
     BlogQuery().addBlog(blog).then((_) {

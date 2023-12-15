@@ -1,3 +1,4 @@
+import 'package:blogz/database/blog/blog_query.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/database/comment/comment.dart';
 import 'package:blogz/database/comment/comment_query.dart';
@@ -129,6 +130,21 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                           Theme.of(context).colorScheme.primary,
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: GestureDetector(
+                                  onTap: () async {
+                                    await like();
+                                  },
+                                  child: Icon(
+                                    checkIfLiked()
+                                        ? Icons.favorite
+                                        : Icons.favorite_border,
+                                    color:
+                                        Theme.of(context).colorScheme.primary,
+                                  ),
                                 ),
                               ),
                             ],
@@ -305,5 +321,29 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
         );
       },
     );
+  }
+
+  bool checkIfLiked() {
+    return widget.blog.likes.contains(SharedPrefs().getCurrentUser());
+  }
+
+  Future like() async {
+    if (!checkIfLiked()) {
+      await BlogQuery().addLike(widget.blog).then((_) {
+        setState(() {
+          widget.blog.likes.add(SharedPrefs().getCurrentUser()!);
+        });
+      }).catchError((error) {
+        BlogzErrorSnackbar(context).showSnackBar(error.toString());
+      });
+    } else {
+      await BlogQuery().removeLike(widget.blog).then((_) {
+        setState(() {
+          widget.blog.likes.remove(SharedPrefs().getCurrentUser()!);
+        });
+      }).catchError((error) {
+        BlogzErrorSnackbar(context).showSnackBar(error.toString());
+      });
+    }
   }
 }

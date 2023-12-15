@@ -7,6 +7,7 @@ class Blog {
   String? imageUrl;
   List<String>? tags;
   DateTime publishedDate;
+  List<String> likes;
 
   Blog(
       {required this.uuid,
@@ -15,8 +16,10 @@ class Blog {
       required this.author,
       required this.publishedDate,
       required this.summary,
+      required this.likes,
       this.imageUrl,
-      this.tags});
+      this.tags,
+     });
 
   Map<String, dynamic> toMap() {
     return {
@@ -27,11 +30,12 @@ class Blog {
       'summary': summary,
       'imageUrl': imageUrl,
       'tags': tags,
-      'publishedDate': publishedDate.toIso8601String()
+      'publishedDate': publishedDate.toIso8601String(),
+      'likes': likes
     };
   }
 
-  static Blog fromMap(Map<String, dynamic> map, String id) {
+  static Blog fromMap(Map<String, dynamic> map) {
     return Blog(
         uuid: map['uuid'],
         title: map['title'],
@@ -40,6 +44,7 @@ class Blog {
         publishedDate: DateTime.parse(map['publishedDate']),
         summary: map['summary'],
         imageUrl: map['imageUrl'],
-        tags: List<String>.from(map['tags'] ?? []));
+        tags: List<String>.from(map['tags'] ?? [],),
+        likes: List<String>.from(map['likes'] ?? []));
   }
 }
