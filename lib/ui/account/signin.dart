@@ -1,6 +1,7 @@
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:blogz/utils/hash_password.dart';
 import 'package:blogz/utils/shared_prefs.dart';
@@ -115,12 +116,7 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacementNamed(context, "/home");
       }
     }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Colors.red,
-        ),
-      );
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
     });
   }
 }

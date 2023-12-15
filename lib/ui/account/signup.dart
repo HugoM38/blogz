@@ -2,6 +2,7 @@ import 'package:blogz/database/users/user.dart';
 import 'package:blogz/database/users/user_query.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
 import 'package:blogz/utils/check_regex.dart';
 import 'package:blogz/utils/hash_password.dart';
@@ -93,13 +94,8 @@ class _SignUpPageState extends State<SignUpPage> {
   void signup() {
     String username = _usernameController.text;
     if (!checkRegex(_passwordController.text)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text(
-              "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule"),
-          backgroundColor: Colors.red,
-        ),
-      );
+      BlogzErrorSnackbar(context).showSnackBar(
+          "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule");
       return;
     }
 
@@ -113,12 +109,7 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.pushReplacementNamed(context, "/home");
       }
     }).catchError((error) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(error.toString()),
-          backgroundColor: Colors.red,
-        ),
-      );
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
     });
   }
 }

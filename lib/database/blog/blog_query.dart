@@ -8,7 +8,9 @@ class BlogQuery {
       Database().firestore.collection('Blogs');
 
   Future<void> addBlog(Blog blog) async {
-    await blogsCollection.add(blog.toMap());
+    await blogsCollection.add(blog.toMap()).catchError((error) {
+      throw Exception("Impossible de créer le blogz");
+    });
   }
 
   Future<List<Blog>> getBlogs() async {

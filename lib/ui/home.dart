@@ -3,6 +3,7 @@ import 'package:blogz/ui/blog/create_blog.dart';
 import 'package:blogz/ui/blog/read_blog.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
+import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/ui/shared/blogz_searchbar.dart';
 import 'package:blogz/utils/shared_prefs.dart';
 import 'package:flutter/material.dart';
@@ -48,12 +49,7 @@ class _HomePageState extends State<HomePage> {
         });
       } catch (error) {
         if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(error.toString()),
-              backgroundColor: Colors.red,
-            ),
-          );
+          BlogzErrorSnackbar(context).showSnackBar(error.toString());
         }
       }
     }
