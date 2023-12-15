@@ -26,7 +26,6 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
   final TextEditingController _summaryController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _tagsController = TextEditingController();
-  final TextEditingController _authorController = TextEditingController();
 
   Uint8List? _imageBytes;
   String? _imageExtension;
@@ -52,7 +51,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                     Padding(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "Créer mon blogz",
+                        'Créer mon blogz',
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 30,
@@ -80,16 +79,12 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                       child: buildTextFormField(
                           context, _tagsController, 'Tags', Icons.tag),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: buildTextFormField(
-                          context, _authorController, 'Auteur', Icons.person),
-                    ),
                     BlogzImagePicker(
                         pickImage: _pickImage, imageBytes: _imageBytes, size: MediaQuery.of(context).size.width * 0.15,),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
                       child: BlogzButton(
+                        key: const Key('CreateBlog'),
                         onPressed: _createBlog,
                         text: 'Soumettre',
                       ),
@@ -144,16 +139,16 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         _summaryController.text.isEmpty) {
       if (mounted) {
         BlogzErrorSnackbar(context).showSnackBar(
-            "Veuillez saisir au moins un titre, un résumé et le contenu du blogz");
+            'Veuillez saisir au moins un titre, un résumé et le contenu du blogz');
       }
       return;
     }
 
-    List<String>? tags = _tagsController.text.isNotEmpty
+    final List<String>? tags = _tagsController.text.isNotEmpty
         ? _tagsController.text.split(',')
         : null;
 
-    Blog blog = Blog(
+    final Blog blog = Blog(
       uuid: uuid,
       title: _titleController.text,
       author: SharedPrefs().getCurrentUser()!,
@@ -168,7 +163,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
     BlogQuery().addBlog(blog).then((_) {
       if (mounted) {
         BlogzSuccessSnackbar(context)
-            .showSnackBar("Le Blogz a été ajouté avec succés");
+            .showSnackBar('Le Blogz a été ajouté avec succés');
       }
       Navigator.pop(context, blog);
     }).catchError((error) {

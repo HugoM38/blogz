@@ -36,7 +36,7 @@ class _SignInPageState extends State<SignInPage> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      "Connexion",
+                      'Connexion',
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 30,
@@ -65,7 +65,7 @@ class _SignInPageState extends State<SignInPage> {
                           child: buildTextFormField(
                               context,
                               _passwordController,
-                              "Mot de passe",
+                              'Mot de passe',
                               Icons.password,
                               fieldType: FieldType.password),
                         ),
@@ -78,14 +78,14 @@ class _SignInPageState extends State<SignInPage> {
                             width: MediaQuery.of(context).size.width * 0.10,
                             child: BlogzButton(
                               onPressed: signin,
-                              text: "Se connecter",
+                              text: 'Se connecter',
                             ),
                           ),
                           SizedBox(
                             width: MediaQuery.of(context).size.width * 0.10,
                             child: BlogzButton(
                               onPressed: () {
-                                Navigator.pushNamed(context, "/signup");
+                                Navigator.pushNamed(context, '/signup');
                               },
                               text: "S'inscrire",
                             ),
@@ -104,8 +104,8 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void signin() {
-    String username = _usernameController.text;
-    String password = hashPassword(_passwordController.text);
+    final String username = _usernameController.text;
+    final String password = hashPassword(_passwordController.text);
 
     UserQuery().signin(username, password).then((user) async {
       await SharedPrefs().setCurrentUser(user.username);
@@ -113,7 +113,7 @@ class _SignInPageState extends State<SignInPage> {
         await SharedPrefs().setCurrentImage(user.imageUrl!);
       }
       if (mounted) {
-        Navigator.pushReplacementNamed(context, "/home");
+        Navigator.pushReplacementNamed(context, '/home');
       }
     }).catchError((error) {
       BlogzErrorSnackbar(context).showSnackBar(error.toString());

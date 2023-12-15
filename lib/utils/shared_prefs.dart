@@ -13,7 +13,7 @@ class SharedPrefs {
     return _instance;
   }
 
-  initSharedPrefs() async {
+  Future initSharedPrefs() async {
     prefs = await SharedPreferences.getInstance();
   }
 

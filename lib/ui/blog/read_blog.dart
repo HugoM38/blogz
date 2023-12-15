@@ -33,7 +33,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
   }
 
   Future<void> _loadComment() async {
-    List<Comment> loadedComments =
+    final List<Comment> loadedComments =
         await CommentQuery().getCommentFromBlogz(widget.blog.uuid);
     setState(() {
       comments = loadedComments;
@@ -99,6 +99,8 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                       child: authorImageUrl != null
                                           ? Image.network(
                                               authorImageUrl!,
+                                              width: 40.0,
+                                              height: 40.0,
                                               fit: BoxFit.cover,
                                             )
                                           : Icon(
@@ -184,7 +186,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                 child: buildTextFormField(
                                     context,
                                     _textEditingController,
-                                    "Écrire un commentaire",
+                                    'Écrire un commentaire',
                                     Icons.comment,
                                     fieldType: FieldType.text,
                                     maxLines: 2),
@@ -219,7 +221,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
   }
 
   Future newComment() async {
-    var comment = Comment(
+    final comment = Comment(
         content: _textEditingController.text,
         author: SharedPrefs().getCurrentUser()!,
         uuid: widget.blog.uuid,
@@ -227,7 +229,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     CommentQuery().addComment(comment).then((_) {
       setState(() {
         comments.insert(0, comment);
-        _textEditingController.text = "";
+        _textEditingController.text = '';
       });
     }).catchError((error) {
       BlogzErrorSnackbar(context).showSnackBar(error.toString());
@@ -242,7 +244,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     return FutureBuilder(
       future: UserQuery().getImageByUsername(comment.author),
       builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
-        String? commentImageUrl = snapshot.data;
+        final String? commentImageUrl = snapshot.data;
 
         return Padding(
           padding: const EdgeInsets.all(8.0),
@@ -308,7 +310,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                   child: SizedBox(
                     width: MediaQuery.of(context).size.width * 0.1,
                     child: Text(
-                      DateFormat("dd/MM/yyyy HH:mm").format(comment.date),
+                      DateFormat('dd/MM/yyyy HH:mm').format(comment.date),
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                       ),

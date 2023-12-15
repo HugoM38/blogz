@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _loadBlogz() async {
     if (!isBlogsLoaded) {
       try {
-        List<Blog> loadedBlogs = await BlogQuery().getBlogs();
+        final List<Blog> loadedBlogs = await BlogQuery().getBlogs();
         setState(() {
           blogs = loadedBlogs;
           filteredBlogs = loadedBlogs;
@@ -141,7 +141,7 @@ class _HomePageState extends State<HomePage> {
             ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          Blog? blog = await Navigator.push(
+          final Blog? blog = await Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const CreateBlogPage()),
           );
@@ -160,7 +160,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   List<Widget> getAppBarActions() {
-    String? imageUrl = SharedPrefs().getCurrentImage();
+    final String? imageUrl = SharedPrefs().getCurrentImage();
     return [
       Padding(
         padding:
@@ -168,7 +168,7 @@ class _HomePageState extends State<HomePage> {
         child: SizedBox(
           width: MediaQuery.of(context).size.width * 0.50,
           child: BlogzSearchBar(
-            hintText: "Rechercher un blogz",
+            hintText: 'Rechercher un blogz',
             searchController: searchController,
             onSearchChanged: _filterBlogz,
           ),
@@ -176,7 +176,7 @@ class _HomePageState extends State<HomePage> {
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: BlogzButton(text: "Se déconnecter", onPressed: logout),
+        child: BlogzButton(text: 'Se déconnecter', onPressed: logout),
       ),
       imageUrl != null
           ? Padding(
@@ -201,12 +201,12 @@ class _HomePageState extends State<HomePage> {
     await SharedPrefs().removeCurrentImage();
     await SharedPrefs().removeCurrentUser();
     if (context.mounted) {
-      Navigator.pushReplacementNamed(context, "/signin");
+      Navigator.pushReplacementNamed(context, '/signin');
     }
   }
 
   Future goToProfile() async {
-    await Navigator.pushNamed(context, "/edit-profile");
+    await Navigator.pushNamed(context, '/edit-profile');
     setState(() {}); // Reload page to display image
   }
 }

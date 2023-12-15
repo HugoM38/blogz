@@ -113,14 +113,14 @@ Widget buildTextFormField(
       ),
       readOnly: true,
       onTap: () async {
-        DateTime? pickedDate = await showDatePicker(
+        final DateTime? pickedDate = await showDatePicker(
           context: context,
           initialDate: initialDate ?? DateTime.now(),
           firstDate: DateTime(2000),
           lastDate: DateTime(2025),
         );
         if (pickedDate != null) {
-          String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
+          final String formattedDate = DateFormat('yyyy-MM-dd').format(pickedDate);
           controller.text = formattedDate;
         }
       },

@@ -13,12 +13,12 @@ class CommentQuery {
   }
 
   Future<List<Comment>> getCommentFromBlogz(String uuid) async {
-    QuerySnapshot query = await commentCollection
+    final QuerySnapshot query = await commentCollection
         .where('uuid', isEqualTo: uuid)
         .orderBy('date', descending: true)
         .get()
         .catchError((error) {
-      throw Exception("Erreur lors de la récupération des commentaires");
+      throw Exception('Erreur lors de la récupération des commentaires');
     });
     return query.docs
         .map((doc) =>

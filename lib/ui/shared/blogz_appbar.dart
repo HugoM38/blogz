@@ -18,7 +18,7 @@ class BlogzAppBar extends StatelessWidget implements PreferredSizeWidget {
               height: 40.0,
             )
           : null,
-      title: Text("Blogz",
+      title: Text('Blogz',
           style: TextStyle(
               color: Theme.of(context).colorScheme.primary,
               fontSize: 30,

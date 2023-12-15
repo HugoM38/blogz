@@ -48,7 +48,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     Container(
                       padding: const EdgeInsets.all(16.0),
                       child: Text(
-                        "Modifier mon profil",
+                        'Modifier mon profil',
                         style: TextStyle(
                             color: Theme.of(context).colorScheme.primary,
                             fontSize: 30,
@@ -67,7 +67,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           width: MediaQuery.of(context).size.width * 0.10,
                           child: BlogzButton(
                             onPressed: _changeImageProfile,
-                            text: "Modifier",
+                            text: 'Modifier',
                           ),
                         ),
                         const SizedBox(height: 16.0),
@@ -92,7 +92,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           width: MediaQuery.of(context).size.width * 0.10,
                           child: BlogzButton(
                             onPressed: _changeUsername,
-                            text: "Modifier",
+                            text: 'Modifier',
                           ),
                         ),
                         const SizedBox(height: 16.0),
@@ -108,7 +108,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             child: buildTextFormField(
                                 context,
                                 _oldPasswordController,
-                                "Ancien mot de passe",
+                                'Ancien mot de passe',
                                 Icons.password,
                                 fieldType: FieldType.password),
                           ),
@@ -121,7 +121,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             child: buildTextFormField(
                                 context,
                                 _newPasswordController,
-                                "Nouveau mot de passe",
+                                'Nouveau mot de passe',
                                 Icons.password,
                                 fieldType: FieldType.password),
                           ),
@@ -132,7 +132,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             width: MediaQuery.of(context).size.width * 0.10,
                             child: BlogzButton(
                               onPressed: _changePassword,
-                              text: "Modifier",
+                              text: 'Modifier',
                             ),
                           ),
                         ),
@@ -158,7 +158,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
             .showSnackBar("Nom d'utilisateur modifié avec succès");
         SharedPrefs().setCurrentUser(_usernameController.text);
         Navigator.pushNamedAndRemoveUntil(
-            context, "/home", (Route<dynamic> route) => false);
+            context, '/home', (Route<dynamic> route) => false);
       }).catchError((error) {
         BlogzErrorSnackbar(context).showSnackBar(error.toString());
       });
@@ -177,15 +177,15 @@ class _EditProfilePageState extends State<EditProfilePage> {
                 _oldPasswordController.text, _newPasswordController.text)
             .then((_) {
           BlogzSuccessSnackbar(context)
-              .showSnackBar("Mot de passe modifié avec succès");
+              .showSnackBar('Mot de passe modifié avec succès');
           Navigator.pushNamedAndRemoveUntil(
-              context, "/home", (Route<dynamic> route) => false);
+              context, '/home', (Route<dynamic> route) => false);
         }).catchError((error) {
           BlogzErrorSnackbar(context).showSnackBar(error.toString());
         });
       } else {
         BlogzErrorSnackbar(context).showSnackBar(
-            "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule");
+            'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule');
       }
     } else {
       BlogzErrorSnackbar(context)
@@ -204,7 +204,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
       }))!;
     } else {
       BlogzErrorSnackbar(context)
-          .showSnackBar("Veuillez selectionner une image");
+          .showSnackBar('Veuillez selectionner une image');
       return;
     }
 
@@ -212,9 +212,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
       setState(() {
         SharedPrefs().setCurrentImage(imageUrl);
       });
-      BlogzSuccessSnackbar(context).showSnackBar("Image modifiée avec succès");
+      BlogzSuccessSnackbar(context).showSnackBar('Image modifiée avec succès');
       Navigator.pushNamedAndRemoveUntil(
-          context, "/home", (Route<dynamic> route) => false);
+          context, '/home', (Route<dynamic> route) => false);
     }).catchError((error) {
       BlogzErrorSnackbar(context).showSnackBar(error.toString());
     });

@@ -9,22 +9,22 @@ class UserQuery {
       Database().firestore.collection('Users');
 
   Future<void> signup(User user) async {
-    QuerySnapshot query =
+    final QuerySnapshot query =
         await usersCollection.where('username', isEqualTo: user.username).get();
     if (query.docs.isEmpty) {
       usersCollection.add(user.toMap());
     } else {
-      throw Exception("Il existe déjà un utilisateur avec ce nom");
+      throw Exception('Il existe déjà un utilisateur avec ce nom');
     }
   }
 
   Future<User> signin(String username, String password) async {
-    QuerySnapshot query = await usersCollection
+    final QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .where('password', isEqualTo: password)
         .get();
     if (query.docs.isNotEmpty) {
-      Map<String, dynamic> user =
+      final Map<String, dynamic> user =
           query.docs.first.data() as Map<String, dynamic>;
       return User.fromMap(user);
     } else {
@@ -33,7 +33,7 @@ class UserQuery {
   }
 
   Future<void> changeImage(String imageUrl) async {
-    QuerySnapshot query = await usersCollection
+    final QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: SharedPrefs().getCurrentUser())
         .get()
         .catchError((error) {
@@ -43,7 +43,7 @@ class UserQuery {
       usersCollection
           .doc(query.docs.first.id)
           .update({'imageUrl': imageUrl}).catchError((error) {
-        throw Exception("Une erreur est survenue lors du changement de rôle");
+        throw Exception('Une erreur est survenue lors du changement de rôle');
       });
     } else {
       throw Exception("Erreur lors du changement d'image");
@@ -52,29 +52,29 @@ class UserQuery {
 
   Future<void> passwordUpdate(
       String username, String oldPassword, String newPassword) async {
-    QuerySnapshot query = await usersCollection
+    final QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .where('password', isEqualTo: hashPassword(oldPassword))
         .get()
         .catchError((error) {
       throw Exception(
-          "Une erreur est survenue lors du changement de mot de passe");
+          'Une erreur est survenue lors du changement de mot de passe');
     });
     if (query.docs.isNotEmpty) {
       usersCollection
           .doc(query.docs.first.id)
           .update({'password': hashPassword(newPassword)}).catchError((error) {
         throw Exception(
-            "Une erreur est survenue lors du changement de mot de passe");
+            'Une erreur est survenue lors du changement de mot de passe');
       });
     } else {
       throw Exception(
-          "Une erreur est survenue lors du changement de mot de passe");
+          'Une erreur est survenue lors du changement de mot de passe');
     }
   }
 
   Future<void> usernameUpdate(String username, String newUsername) async {
-    QuerySnapshot query = await usersCollection
+    final QuerySnapshot query = await usersCollection
         .where('username', isEqualTo: username)
         .get()
         .catchError((error) {
@@ -82,7 +82,7 @@ class UserQuery {
           "Une erreur est survenue lors du changement de nom d'utilisateur");
     });
 
-    QuerySnapshot queryNewUsername = await usersCollection
+    final QuerySnapshot queryNewUsername = await usersCollection
         .where('username', isEqualTo: newUsername)
         .get()
         .catchError((error) {
@@ -103,10 +103,10 @@ class UserQuery {
   }
 
   Future<String?> getImageByUsername(String username) async {
-    QuerySnapshot query =
+    final QuerySnapshot query =
         await usersCollection.where('username', isEqualTo: username).get();
     if (query.docs.isNotEmpty) {
-      Map<String, dynamic> user =
+      final Map<String, dynamic> user =
           query.docs.first.data() as Map<String, dynamic>;
       return User.fromMap(user).imageUrl;
     } else {

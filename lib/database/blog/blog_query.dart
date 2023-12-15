@@ -9,56 +9,56 @@ class BlogQuery {
 
   Future<void> addBlog(Blog blog) async {
     await blogsCollection.add(blog.toMap()).catchError((error) {
-      throw Exception("Impossible de créer le blogz");
+      throw Exception('Impossible de créer le blogz');
     });
   }
 
   Future<List<Blog>> getBlogs() async {
-    QuerySnapshot query = await blogsCollection.get();
+    final QuerySnapshot query = await blogsCollection.get();
     return query.docs
         .map((doc) => Blog.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
 
   Future addLike(Blog blog) async {
-    QuerySnapshot query = await blogsCollection
+    final QuerySnapshot query = await blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
-      throw Exception("Une erreur est survenue lors du like");
+      throw Exception('Une erreur est survenue lors du like');
     });
     if (query.docs.isNotEmpty) {
-      Blog updateBlog =
+      final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
       updateBlog.likes.add(SharedPrefs().getCurrentUser()!);
       await blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
-        throw Exception("Une erreur est survenue lors du like");
+        throw Exception('Une erreur est survenue lors du like');
       });
     } else {
-      throw Exception("Une erreur est survenue lors du like");
+      throw Exception('Une erreur est survenue lors du like');
     }
   }
 
   Future removeLike(Blog blog) async {
-    QuerySnapshot query = await blogsCollection
+    final QuerySnapshot query = await blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
-      throw Exception("Une erreur est survenue lors du like");
+      throw Exception('Une erreur est survenue lors du like');
     });
     if (query.docs.isNotEmpty) {
-      Blog updateBlog =
+      final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
       updateBlog.likes.remove(SharedPrefs().getCurrentUser()!);
       await blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
-        throw Exception("Une erreur est survenue lors du like");
+        throw Exception('Une erreur est survenue lors du like');
       });
     } else {
-      throw Exception("Une erreur est survenue lors du like");
+      throw Exception('Une erreur est survenue lors du like');
     }
   }
 }

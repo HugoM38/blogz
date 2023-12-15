@@ -38,7 +38,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   Container(
                     padding: const EdgeInsets.all(16.0),
                     child: Text(
-                      "Inscription",
+                      'Inscription',
                       style: TextStyle(
                           color: Theme.of(context).colorScheme.primary,
                           fontSize: 30,
@@ -67,7 +67,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           child: buildTextFormField(
                               context,
                               _passwordController,
-                              "Mot de passe",
+                              'Mot de passe',
                               Icons.password,
                               fieldType: FieldType.password),
                         ),
@@ -92,21 +92,21 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void signup() {
-    String username = _usernameController.text;
+    final String username = _usernameController.text;
     if (!checkRegex(_passwordController.text)) {
       BlogzErrorSnackbar(context).showSnackBar(
-          "Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule");
+          'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule');
       return;
     }
 
-    String password = hashPassword(_passwordController.text);
+    final String password = hashPassword(_passwordController.text);
 
     UserQuery()
         .signup(User(username: username, password: password))
         .then((_) async {
       await SharedPrefs().setCurrentUser(username);
       if (mounted) {
-        Navigator.pushReplacementNamed(context, "/home");
+        Navigator.pushReplacementNamed(context, '/home');
       }
     }).catchError((error) {
       BlogzErrorSnackbar(context).showSnackBar(error.toString());

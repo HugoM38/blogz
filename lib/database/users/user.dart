@@ -6,7 +6,7 @@ class User {
   User({required this.username, required this.password, this.imageUrl});
 
   factory User.fromMap(Map<String, dynamic> map) {
-    if (map["imageUrl"] != null) {
+    if (map['imageUrl'] != null) {
       return User(
           username: map['username'],
           password: map['password'],
