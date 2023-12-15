@@ -199,14 +199,13 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: MediaQuery.of(context).size.height * 0.4,
-                          child: ListView.builder(
-                              itemCount: comments.length,
-                              itemBuilder: (BuildContext context, int index) {
-                                return buildRowTemplate(
-                                    comments[index], Key(index.toString()));
-                              }),
+                        ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: comments.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return buildRowTemplate(
+                                comments[index], Key(index.toString()));
+                          },
                         )
                       ],
                     ),
