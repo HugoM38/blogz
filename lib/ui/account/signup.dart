@@ -92,7 +92,6 @@ class _SignUpPageState extends State<SignUpPage> {
   }
 
   void signup() {
-    final String username = _usernameController.text;
     if (!checkRegex(_passwordController.text)) {
       BlogzErrorSnackbar(context).showSnackBar(
           'Le mot de passe doit contenir au moins 8 caractères, 1 chiffre et 1 majuscule');
@@ -102,9 +101,9 @@ class _SignUpPageState extends State<SignUpPage> {
     final String password = hashPassword(_passwordController.text);
 
     UserQuery()
-        .signup(User(username: username, password: password))
+        .signup(User(username: _usernameController.text, password: password))
         .then((_) async {
-      await SharedPrefs().setCurrentUser(username);
+      await SharedPrefs().setCurrentUser(_usernameController.text);
       if (mounted) {
         Navigator.pushReplacementNamed(context, '/home');
       }
