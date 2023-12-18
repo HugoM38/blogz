@@ -27,7 +27,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
 
   @override
   void initState() {
-    loadAuthorImage();
+    _loadAuthorImage();
     _loadComment();
     super.initState();
   }
@@ -138,10 +138,10 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: GestureDetector(
                                   onTap: () async {
-                                    await like();
+                                    await _like();
                                   },
                                   child: Icon(
-                                    checkIfLiked()
+                                    _checkIfLiked()
                                         ? Icons.favorite
                                         : Icons.favorite_border,
                                     color:
@@ -194,7 +194,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: BlogzButton(
-                                  onPressed: newComment, text: 'Envoyer'),
+                                  onPressed: _newComment, text: 'Envoyer'),
                             ),
                           ],
                         ),
@@ -202,7 +202,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                           shrinkWrap: true,
                           itemCount: _comments.length,
                           itemBuilder: (BuildContext context, int index) {
-                            return buildRowTemplate(
+                            return _buildCommentRow(
                                 _comments[index], Key(index.toString()));
                           },
                         )
@@ -218,7 +218,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     );
   }
 
-  Widget buildRowTemplate(Comment comment, Key key) {
+  Widget _buildCommentRow(Comment comment, Key key) {
     return FutureBuilder(
       future: UserQuery().getImageByUsername(comment.author),
       builder: (BuildContext context, AsyncSnapshot<String?> snapshot) {
@@ -303,12 +303,12 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     );
   }
 
-  bool checkIfLiked() {
+  bool _checkIfLiked() {
     return widget.blog.likes.contains(SharedPrefs().getCurrentUser());
   }
 
-  Future<void> like() async {
-    if (!checkIfLiked()) {
+  Future<void> _like() async {
+    if (!_checkIfLiked()) {
       await BlogQuery().addLike(widget.blog).then((_) {
         setState(() {
           widget.blog.likes.add(SharedPrefs().getCurrentUser()!);
@@ -327,11 +327,11 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     }
   }
 
-  Future<void> loadAuthorImage() async {
+  Future<void> _loadAuthorImage() async {
     _authorImageUrl = await UserQuery().getImageByUsername(widget.blog.author);
   }
 
-  Future<void> newComment() async {
+  Future<void> _newComment() async {
     final comment = Comment(
         content: _textEditingController.text,
         author: SharedPrefs().getCurrentUser()!,
