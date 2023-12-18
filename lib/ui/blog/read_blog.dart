@@ -34,7 +34,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
 
   Future<void> _loadComment() async {
     final List<Comment> loadedComments =
-        await CommentQuery().getCommentFromBlogz(widget.blog.uuid);
+        await CommentQuery().getCommentsFromBlog(widget.blog.uuid);
     setState(() {
       comments = loadedComments;
     });

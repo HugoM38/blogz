@@ -3,17 +3,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'comment.dart';
 
 class CommentQuery {
-  CollectionReference commentCollection =
+  final CollectionReference _commentsCollection =
       Database().firestore.collection('Comment');
 
   Future<void> addComment(Comment comment) async {
-    await commentCollection.add(comment.toMap()).catchError((error) {
+    await _commentsCollection.add(comment.toMap()).catchError((error) {
       throw Exception("Impossible d'ajouter le commentaire");
     });
   }
 
-  Future<List<Comment>> getCommentFromBlogz(String uuid) async {
-    final QuerySnapshot query = await commentCollection
+  Future<List<Comment>> getCommentsFromBlog(String uuid) async {
+    final QuerySnapshot query = await _commentsCollection
         .where('uuid', isEqualTo: uuid)
         .orderBy('date', descending: true)
         .get()
