@@ -4,24 +4,27 @@ import 'package:blogz/utils/shared_prefs.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BlogQuery {
-  CollectionReference blogsCollection =
+  final CollectionReference _blogsCollection =
       Database().firestore.collection('Blogs');
 
   Future<void> addBlog(Blog blog) async {
-    await blogsCollection.add(blog.toMap()).catchError((error) {
+    await _blogsCollection.add(blog.toMap()).catchError((error) {
       throw Exception('Impossible de créer le blogz');
     });
   }
 
   Future<List<Blog>> getBlogs() async {
-    final QuerySnapshot query = await blogsCollection.get();
+    final QuerySnapshot query =
+        await _blogsCollection.get().catchError((error) {
+      throw Exception('Erreur lors de la récupération des blogs');
+    });
     return query.docs
         .map((doc) => Blog.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
 
   Future addLike(Blog blog) async {
-    final QuerySnapshot query = await blogsCollection
+    final QuerySnapshot query = await _blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
@@ -31,7 +34,7 @@ class BlogQuery {
       final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
       updateBlog.likes.add(SharedPrefs().getCurrentUser()!);
-      await blogsCollection
+      await _blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
         throw Exception('Une erreur est survenue lors du like');
@@ -42,7 +45,7 @@ class BlogQuery {
   }
 
   Future removeLike(Blog blog) async {
-    final QuerySnapshot query = await blogsCollection
+    final QuerySnapshot query = await _blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
@@ -52,7 +55,7 @@ class BlogQuery {
       final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
       updateBlog.likes.remove(SharedPrefs().getCurrentUser()!);
-      await blogsCollection
+      await _blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
         throw Exception('Une erreur est survenue lors du like');
