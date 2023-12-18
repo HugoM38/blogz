@@ -18,44 +18,15 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isBlogsLoaded = false;
-  List<Blog> blogs = [];
-  List<Blog> filteredBlogs = [];
-  final TextEditingController searchController = TextEditingController();
+  bool _isBlogsLoaded = false;
+  List<Blog> _blogs = [];
+  List<Blog> _filteredBlogs = [];
+  final TextEditingController _searchController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
     _loadBlogz();
-  }
-
-  void _filterBlogz(String searchText) {
-    final searchLower = searchText.toLowerCase();
-    setState(() {
-      filteredBlogs = blogs.where((blog) {
-        return blog.title.toLowerCase().contains(searchLower);
-      }).toList();
-    });
-  }
-
-  Future<void> _loadBlogz() async {
-    if (!isBlogsLoaded) {
-      try {
-        final List<Blog> loadedBlogs = await BlogQuery().getBlogs();
-        setState(() {
-          blogs = loadedBlogs;
-          filteredBlogs = loadedBlogs;
-          isBlogsLoaded = true;
-        });
-      } catch (error) {
-        if (context.mounted) {
-          BlogzErrorSnackbar(context).showSnackBar(error.toString());
-        }
-      }
-    }
-    setState(() {
-      filteredBlogs = blogs;
-    });
   }
 
   @override
@@ -66,7 +37,7 @@ class _HomePageState extends State<HomePage> {
         actions: getAppBarActions(),
         displayLogo: true,
       ),
-      body: blogs.isEmpty
+      body: _blogs.isEmpty
           ? Center(
               child: Text(
               'Aucun blog disponible.',
@@ -79,16 +50,12 @@ class _HomePageState extends State<HomePage> {
                     crossAxisCount: 4,
                     childAspectRatio: 3 / 3.5,
                   ),
-                  itemCount: filteredBlogs.length,
+                  itemCount: _filteredBlogs.length,
                   itemBuilder: (context, index) {
-                    final blog = filteredBlogs[index];
+                    final blog = _filteredBlogs[index];
                     return InkWell(
                       onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) =>
-                                    ReadBlogPage(blog: blog)));
+                        _goToBlog(blog);
                       },
                       child: Container(
                         margin: const EdgeInsets.all(8.0),
@@ -140,19 +107,7 @@ class _HomePageState extends State<HomePage> {
                   }),
             ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final Blog? blog = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const CreateBlogPage()),
-          );
-
-          setState(() {
-            if (blog != null) {
-              blogs.add(blog);
-              _loadBlogz();
-            }
-          });
-        },
+        onPressed: _goToCreateBlog,
         child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
@@ -169,20 +124,20 @@ class _HomePageState extends State<HomePage> {
           width: MediaQuery.of(context).size.width * 0.50,
           child: BlogzSearchBar(
             hintText: 'Rechercher un blogz',
-            searchController: searchController,
+            searchController: _searchController,
             onSearchChanged: _filterBlogz,
           ),
         ),
       ),
       Padding(
         padding: const EdgeInsets.all(8.0),
-        child: BlogzButton(text: 'Se déconnecter', onPressed: logout),
+        child: BlogzButton(text: 'Se déconnecter', onPressed: _logout),
       ),
       imageUrl != null
           ? Padding(
               padding: const EdgeInsets.all(8.0),
               child: GestureDetector(
-                  onTap: goToProfile,
+                  onTap: _goToProfile,
                   child: ClipOval(
                       child: Image.network(
                     imageUrl,
@@ -192,21 +147,69 @@ class _HomePageState extends State<HomePage> {
           : Padding(
               padding: const EdgeInsets.all(8.0),
               child: IconButton(
-                  onPressed: goToProfile, icon: const Icon(Icons.person)),
+                  onPressed: _goToProfile, icon: const Icon(Icons.person)),
             ),
     ];
   }
 
-  Future logout() async {
+  void _filterBlogz(String searchText) {
+    final searchLower = searchText.toLowerCase();
+    setState(() {
+      _filteredBlogs = _blogs.where((blog) {
+        return blog.title.toLowerCase().contains(searchLower);
+      }).toList();
+    });
+  }
+
+  void _goToBlog(Blog blog) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => ReadBlogPage(blog: blog)));
+  }
+
+  Future<void> _goToCreateBlog() async {
+    final Blog? blog = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const CreateBlogPage()),
+    );
+
+    setState(() {
+      if (blog != null) {
+        _blogs.add(blog);
+        _loadBlogz();
+      }
+    });
+  }
+
+  Future<void> _goToProfile() async {
+    await Navigator.pushNamed(context, '/edit-profile');
+    setState(() {}); // Reload page to display image
+  }
+
+  Future<void> _loadBlogz() async {
+    if (!_isBlogsLoaded) {
+      try {
+        final List<Blog> loadedBlogs = await BlogQuery().getBlogs();
+        setState(() {
+          _blogs = loadedBlogs;
+          _filteredBlogs = loadedBlogs;
+          _isBlogsLoaded = true;
+        });
+      } catch (error) {
+        if (context.mounted) {
+          BlogzErrorSnackbar(context).showSnackBar(error.toString());
+        }
+      }
+    }
+    setState(() {
+      _filteredBlogs = _blogs;
+    });
+  }
+
+  Future<void> _logout() async {
     await SharedPrefs().removeCurrentImage();
     await SharedPrefs().removeCurrentUser();
     if (context.mounted) {
       Navigator.pushReplacementNamed(context, '/signin');
     }
-  }
-
-  Future goToProfile() async {
-    await Navigator.pushNamed(context, '/edit-profile');
-    setState(() {}); // Reload page to display image
   }
 }
