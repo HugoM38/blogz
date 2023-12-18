@@ -102,25 +102,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
     );
   }
 
-  Future<void> _pickImage() async {
-    try {
-      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-      if (pickedFile != null) {
-        final bytes = await pickedFile.readAsBytes();
-        setState(() {
-          _imageBytes = bytes;
-          _imageExtension = path.extension(pickedFile.path);
-        });
-      }
-    } catch (error) {
-      if (mounted) {
-        BlogzErrorSnackbar(context)
-            .showSnackBar("Erreur lors de la sélection de l'image");
-      }
-    }
-  }
-
-  void _createBlog() async {
+  Future<void> _createBlog() async {
     String? imageUrl;
     final String uuid = const Uuid().v4();
     if (_imageBytes != null) {
@@ -173,5 +155,23 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         BlogzErrorSnackbar(context).showSnackBar(error);
       }
     });
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        final bytes = await pickedFile.readAsBytes();
+        setState(() {
+          _imageBytes = bytes;
+          _imageExtension = path.extension(pickedFile.path);
+        });
+      }
+    } catch (error) {
+      if (mounted) {
+        BlogzErrorSnackbar(context)
+            .showSnackBar("Erreur lors de la sélection de l'image");
+      }
+    }
   }
 }
