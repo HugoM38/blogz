@@ -148,24 +148,33 @@ class _EditProfilePageState extends State<EditProfilePage> {
     );
   }
 
-  void _changeUsername() {
-    if (_usernameController.text.isNotEmpty) {
-      UserQuery()
-          .usernameUpdate(
-              SharedPrefs().getCurrentUser()!, _usernameController.text)
-          .then((_) {
-        BlogzSuccessSnackbar(context)
-            .showSnackBar("Nom d'utilisateur modifié avec succès");
-        SharedPrefs().setCurrentUser(_usernameController.text);
-        Navigator.pushNamedAndRemoveUntil(
-            context, '/home', (Route<dynamic> route) => false);
+  void _changeImageProfile() async {
+    String? imageUrl;
+    if (_imageBytes != null) {
+      await uploadImage(
+              _imageBytes!, SharedPrefs().getCurrentUser()!, _imageExtension)
+          .then((result) {
+        imageUrl = result!;
       }).catchError((error) {
         BlogzErrorSnackbar(context).showSnackBar(error.toString());
+        return;
       });
     } else {
       BlogzErrorSnackbar(context)
-          .showSnackBar("Veuillez saisir un nom d'utilisateur");
+          .showSnackBar('Veuillez selectionner une image');
+      return;
     }
+
+    UserQuery().changeImage(imageUrl!).then((_) {
+      setState(() {
+        SharedPrefs().setCurrentImage(imageUrl!);
+      });
+      BlogzSuccessSnackbar(context).showSnackBar('Image modifiée avec succès');
+      Navigator.pushNamedAndRemoveUntil(
+          context, '/home', (Route<dynamic> route) => false);
+    }).catchError((error) {
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
+    });
   }
 
   void _changePassword() {
@@ -193,31 +202,24 @@ class _EditProfilePageState extends State<EditProfilePage> {
     }
   }
 
-  void _changeImageProfile() async {
-    String imageUrl;
-    if (_imageBytes != null) {
-      imageUrl = (await uploadImage(
-              _imageBytes!, SharedPrefs().getCurrentUser()!, _imageExtension)
-          .catchError((error) {
+  void _changeUsername() {
+    if (_usernameController.text.isNotEmpty) {
+      UserQuery()
+          .usernameUpdate(
+              SharedPrefs().getCurrentUser()!, _usernameController.text)
+          .then((_) {
+        BlogzSuccessSnackbar(context)
+            .showSnackBar("Nom d'utilisateur modifié avec succès");
+        SharedPrefs().setCurrentUser(_usernameController.text);
+        Navigator.pushNamedAndRemoveUntil(
+            context, '/home', (Route<dynamic> route) => false);
+      }).catchError((error) {
         BlogzErrorSnackbar(context).showSnackBar(error.toString());
-        return null;
-      }))!;
+      });
     } else {
       BlogzErrorSnackbar(context)
-          .showSnackBar('Veuillez selectionner une image');
-      return;
+          .showSnackBar("Veuillez saisir un nom d'utilisateur");
     }
-
-    UserQuery().changeImage(imageUrl).then((_) {
-      setState(() {
-        SharedPrefs().setCurrentImage(imageUrl);
-      });
-      BlogzSuccessSnackbar(context).showSnackBar('Image modifiée avec succès');
-      Navigator.pushNamedAndRemoveUntil(
-          context, '/home', (Route<dynamic> route) => false);
-    }).catchError((error) {
-      BlogzErrorSnackbar(context).showSnackBar(error.toString());
-    });
   }
 
   Future<void> _pickImage() async {
