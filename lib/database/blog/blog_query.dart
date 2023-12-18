@@ -18,18 +18,23 @@ class BlogQuery {
         await _blogsCollection.get().catchError((error) {
       throw Exception('Erreur lors de la récupération des blogs');
     });
+
     return query.docs
         .map((doc) => Blog.fromMap(doc.data() as Map<String, dynamic>))
         .toList();
   }
 
   Future addLike(Blog blog) async {
+    final Exception exception =
+        Exception('Une erreur est survenue lors du like');
+        
     final QuerySnapshot query = await _blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
-      throw Exception('Une erreur est survenue lors du like');
+      throw exception;
     });
+
     if (query.docs.isNotEmpty) {
       final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
@@ -37,20 +42,24 @@ class BlogQuery {
       await _blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
-        throw Exception('Une erreur est survenue lors du like');
+        throw exception;
       });
     } else {
-      throw Exception('Une erreur est survenue lors du like');
+      throw exception;
     }
   }
 
   Future removeLike(Blog blog) async {
+    final Exception exception =
+        Exception('Une erreur est survenue lors de la suppression like');
+
     final QuerySnapshot query = await _blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()
         .catchError((error) {
-      throw Exception('Une erreur est survenue lors du like');
+      throw exception;
     });
+
     if (query.docs.isNotEmpty) {
       final Blog updateBlog =
           Blog.fromMap(query.docs.first.data() as Map<String, dynamic>);
@@ -58,10 +67,10 @@ class BlogQuery {
       await _blogsCollection
           .doc(query.docs.first.id)
           .update({'likes': updateBlog.likes}).catchError((error) {
-        throw Exception('Une erreur est survenue lors du like');
+        throw exception;
       });
     } else {
-      throw Exception('Une erreur est survenue lors du like');
+      throw exception;
     }
   }
 }
