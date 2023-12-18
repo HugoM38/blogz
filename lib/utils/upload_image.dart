@@ -7,10 +7,11 @@ Future<String?> uploadImage(
   try {
     final String fileNameWithExtension = fileName + (imageExtension ?? '.jpg');
 
-    final ref =
-        Database().firebaseStorage.ref().child('images/$fileNameWithExtension');
-
-    final result = await ref.putData(imageBytes);
+    final result = await Database()
+        .firebaseStorage
+        .ref()
+        .child('images/$fileNameWithExtension')
+        .putData(imageBytes);
 
     return await result.ref.getDownloadURL();
   } catch (_) {
