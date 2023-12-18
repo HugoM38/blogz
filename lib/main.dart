@@ -31,8 +31,7 @@ class Blogz extends StatelessWidget {
       theme: ThemeData(
         textSelectionTheme: TextSelectionThemeData(
             cursorColor: Theme.of(context).colorScheme.secondary,
-            selectionColor:
-                Theme.of(context).colorScheme.secondary,
+            selectionColor: Theme.of(context).colorScheme.secondary,
             selectionHandleColor: Theme.of(context).colorScheme.secondary),
         colorScheme: ColorScheme.fromSeed(
             seedColor: const Color(0xFF392F5A),

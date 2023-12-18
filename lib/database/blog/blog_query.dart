@@ -27,7 +27,7 @@ class BlogQuery {
   Future addLike(Blog blog) async {
     final Exception exception =
         Exception('Une erreur est survenue lors du like');
-        
+
     final QuerySnapshot query = await _blogsCollection
         .where('uuid', isEqualTo: blog.uuid)
         .get()

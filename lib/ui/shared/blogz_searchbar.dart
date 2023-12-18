@@ -15,40 +15,22 @@ class BlogzSearchBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Theme
-          .of(context)
-          .colorScheme
-          .primary,
+      color: Theme.of(context).colorScheme.primary,
       child: Row(
         children: [
           Expanded(
             child: TextField(
               controller: searchController,
-              style: TextStyle(color: Theme
-                  .of(context)
-                  .colorScheme
-                  .secondary),
-              cursorColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .secondary,
+              style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+              cursorColor: Theme.of(context).colorScheme.secondary,
               decoration: InputDecoration(
                   filled: true,
-                  fillColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .primary,
+                  fillColor: Theme.of(context).colorScheme.primary,
                   hintText: hintText,
                   hintStyle:
-                  TextStyle(color: Theme
-                      .of(context)
-                      .colorScheme
-                      .secondary),
+                      TextStyle(color: Theme.of(context).colorScheme.secondary),
                   suffixIcon: const Icon(Icons.search),
-                  suffixIconColor: Theme
-                      .of(context)
-                      .colorScheme
-                      .secondary),
+                  suffixIconColor: Theme.of(context).colorScheme.secondary),
               onChanged: onSearchChanged,
             ),
           ),

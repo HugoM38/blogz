@@ -9,17 +9,17 @@ class Blog {
   DateTime publishedDate;
   List<String> likes;
 
-  Blog(
-      {required this.uuid,
-      required this.title,
-      required this.content,
-      required this.author,
-      required this.publishedDate,
-      required this.summary,
-      required this.likes,
-      this.imageUrl,
-      this.tags,
-     });
+  Blog({
+    required this.uuid,
+    required this.title,
+    required this.content,
+    required this.author,
+    required this.publishedDate,
+    required this.summary,
+    required this.likes,
+    this.imageUrl,
+    this.tags,
+  });
 
   Map<String, dynamic> toMap() {
     return {
@@ -44,7 +44,9 @@ class Blog {
         publishedDate: DateTime.parse(map['publishedDate']),
         summary: map['summary'],
         imageUrl: map['imageUrl'],
-        tags: List<String>.from(map['tags'] ?? [],),
+        tags: List<String>.from(
+          map['tags'] ?? [],
+        ),
         likes: List<String>.from(map['likes'] ?? []));
   }
 }

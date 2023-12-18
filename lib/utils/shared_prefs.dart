@@ -21,7 +21,6 @@ class SharedPrefs {
     return prefs.getString(_userKey);
   }
 
-
   Future<void> setCurrentUser(String value) async {
     await prefs.setString(_userKey, value);
   }
@@ -30,10 +29,9 @@ class SharedPrefs {
     await prefs.remove(_userKey);
   }
 
-    String? getCurrentImage() {
+  String? getCurrentImage() {
     return prefs.getString(_imageKey);
   }
-
 
   Future<void> setCurrentImage(String value) async {
     await prefs.setString(_imageKey, value);

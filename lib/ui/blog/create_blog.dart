@@ -65,13 +65,13 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: buildTextFormField(context, _summaryController, 'Sommaires',
-                          Icons.description),
+                      child: buildTextFormField(context, _summaryController,
+                          'Sommaires', Icons.description),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: buildTextFormField(context, _contentController, 'Contenu',
-                          Icons.text_fields,
+                      child: buildTextFormField(context, _contentController,
+                          'Contenu', Icons.text_fields,
                           maxLines: 5),
                     ),
                     Padding(
@@ -80,7 +80,10 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                           context, _tagsController, 'Tags', Icons.tag),
                     ),
                     BlogzImagePicker(
-                        pickImage: _pickImage, imageBytes: _imageBytes, size: MediaQuery.of(context).size.width * 0.15,),
+                      pickImage: _pickImage,
+                      imageBytes: _imageBytes,
+                      size: MediaQuery.of(context).size.width * 0.15,
+                    ),
                     Padding(
                       padding: const EdgeInsets.fromLTRB(0, 16, 0, 8),
                       child: BlogzButton(
@@ -149,16 +152,15 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
         : null;
 
     final Blog blog = Blog(
-      uuid: uuid,
-      title: _titleController.text,
-      author: SharedPrefs().getCurrentUser()!,
-      summary: _summaryController.text,
-      imageUrl: imageUrl,
-      content: _contentController.text,
-      publishedDate: DateTime.now(),
-      tags: tags,
-      likes: []
-    );
+        uuid: uuid,
+        title: _titleController.text,
+        author: SharedPrefs().getCurrentUser()!,
+        summary: _summaryController.text,
+        imageUrl: imageUrl,
+        content: _contentController.text,
+        publishedDate: DateTime.now(),
+        tags: tags,
+        likes: []);
 
     BlogQuery().addBlog(blog).then((_) {
       if (mounted) {

@@ -25,7 +25,6 @@ class Comment {
         content: map['content'],
         author: map['author'],
         uuid: map['uuid'],
-        date: DateTime.parse(map['date'])
-    );
+        date: DateTime.parse(map['date']));
   }
 }
