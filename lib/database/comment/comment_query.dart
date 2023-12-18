@@ -4,7 +4,7 @@ import 'comment.dart';
 
 class CommentQuery {
   final CollectionReference _commentsCollection =
-      Database().firestore.collection('Comment');
+      Database().firestore.collection('Comments');
 
   Future<void> addComment(Comment comment) async {
     await _commentsCollection.add(comment.toMap()).catchError((error) {

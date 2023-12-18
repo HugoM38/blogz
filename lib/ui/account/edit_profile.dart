@@ -1,6 +1,6 @@
 import 'dart:typed_data';
 
-import 'package:blogz/database/users/user_query.dart';
+import 'package:blogz/database/user/user_query.dart';
 import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/ui/shared/blogz_error_snackbar.dart';

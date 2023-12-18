@@ -3,7 +3,7 @@ import 'package:blogz/ui/shared/blogz_appbar.dart';
 import 'package:blogz/database/comment/comment.dart';
 import 'package:blogz/database/comment/comment_query.dart';
 import 'package:blogz/database/blog/blog.dart';
-import 'package:blogz/database/users/user_query.dart';
+import 'package:blogz/database/user/user_query.dart';
 import 'package:blogz/ui/shared/blogz_button.dart';
 import 'package:blogz/ui/shared/blogz_error_snackbar.dart';
 import 'package:blogz/utils/build_text_form_field.dart';
