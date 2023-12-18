@@ -51,11 +51,11 @@ class _SignInPageState extends State<SignInPage> {
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: buildTextFormField(
-                              context,
-                              _usernameController,
-                              "Nom d'utilisateur",
-                              Icons.person,
-                              ),
+                            context,
+                            _usernameController,
+                            "Nom d'utilisateur",
+                            Icons.person,
+                          ),
                         ),
                       ),
                       Padding(
@@ -104,10 +104,10 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void signin() {
-    final String username = _usernameController.text;
-    final String password = hashPassword(_passwordController.text);
-
-    UserQuery().signin(username, password).then((user) async {
+    UserQuery()
+        .signin(
+            _usernameController.text, hashPassword(_passwordController.text))
+        .then((user) async {
       await SharedPrefs().setCurrentUser(user.username);
       if (user.imageUrl != null) {
         await SharedPrefs().setCurrentImage(user.imageUrl!);
