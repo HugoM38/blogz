@@ -80,11 +80,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                           child: SizedBox(
                             width: MediaQuery.of(context).size.width * 0.20,
                             child: buildTextFormField(
-                                context,
-                                _usernameController,
-                                "Nouveau nom d'utilisateur",
-                                Icons.person,
-                                fieldType: FieldType.text),
+                              context,
+                              _usernameController,
+                              "Nouveau nom d'utilisateur",
+                              Icons.person,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16.0),

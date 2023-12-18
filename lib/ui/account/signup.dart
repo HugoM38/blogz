@@ -53,11 +53,11 @@ class _SignUpPageState extends State<SignUpPage> {
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.20,
                           child: buildTextFormField(
-                              context,
-                              _usernameController,
-                              "Nom d'utilisateur",
-                              Icons.person,
-                              fieldType: FieldType.text),
+                            context,
+                            _usernameController,
+                            "Nom d'utilisateur",
+                            Icons.person,
+                          ),
                         ),
                       ),
                       Padding(

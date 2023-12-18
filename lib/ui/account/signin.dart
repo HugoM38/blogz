@@ -55,7 +55,7 @@ class _SignInPageState extends State<SignInPage> {
                               _usernameController,
                               "Nom d'utilisateur",
                               Icons.person,
-                              fieldType: FieldType.text),
+                              ),
                         ),
                       ),
                       Padding(

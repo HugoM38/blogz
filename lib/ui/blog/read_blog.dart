@@ -188,7 +188,6 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                     _textEditingController,
                                     'Écrire un commentaire',
                                     Icons.comment,
-                                    fieldType: FieldType.text,
                                     maxLines: 2),
                               ),
                             ),
