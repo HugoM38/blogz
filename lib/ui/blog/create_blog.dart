@@ -66,7 +66,7 @@ class _CreateBlogPageState extends State<CreateBlogPage> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: buildTextFormField(context, _summaryController,
-                          'Sommaires', Icons.description),
+                          'Sommaire', Icons.description),
                     ),
                     Padding(
                       padding: const EdgeInsets.all(8.0),
