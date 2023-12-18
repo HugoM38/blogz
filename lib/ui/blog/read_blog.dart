@@ -21,9 +21,9 @@ class ReadBlogPage extends StatefulWidget {
 }
 
 class _ReadBlogPageState extends State<ReadBlogPage> {
-  List<Comment> comments = [];
+  List<Comment> _comments = [];
   final TextEditingController _textEditingController = TextEditingController();
-  String? authorImageUrl;
+  String? _authorImageUrl;
 
   @override
   void initState() {
@@ -36,7 +36,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     final List<Comment> loadedComments =
         await CommentQuery().getCommentsFromBlog(widget.blog.uuid);
     setState(() {
-      comments = loadedComments;
+      _comments = loadedComments;
     });
   }
 
@@ -96,9 +96,9 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                                     ),
                                   ),
                                   child: ClipOval(
-                                      child: authorImageUrl != null
+                                      child: _authorImageUrl != null
                                           ? Image.network(
-                                              authorImageUrl!,
+                                              _authorImageUrl!,
                                               width: 40.0,
                                               height: 40.0,
                                               fit: BoxFit.cover,
@@ -200,10 +200,10 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
                         ),
                         ListView.builder(
                           shrinkWrap: true,
-                          itemCount: comments.length,
+                          itemCount: _comments.length,
                           itemBuilder: (BuildContext context, int index) {
                             return buildRowTemplate(
-                                comments[index], Key(index.toString()));
+                                _comments[index], Key(index.toString()));
                           },
                         )
                       ],
@@ -216,26 +216,6 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
         ),
       ),
     );
-  }
-
-  Future newComment() async {
-    final comment = Comment(
-        content: _textEditingController.text,
-        author: SharedPrefs().getCurrentUser()!,
-        uuid: widget.blog.uuid,
-        date: DateTime.now());
-    CommentQuery().addComment(comment).then((_) {
-      setState(() {
-        comments.insert(0, comment);
-        _textEditingController.text = '';
-      });
-    }).catchError((error) {
-      BlogzErrorSnackbar(context).showSnackBar(error.toString());
-    });
-  }
-
-  Future loadAuthorImage() async {
-    authorImageUrl = await UserQuery().getImageByUsername(widget.blog.author);
   }
 
   Widget buildRowTemplate(Comment comment, Key key) {
@@ -327,7 +307,7 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
     return widget.blog.likes.contains(SharedPrefs().getCurrentUser());
   }
 
-  Future like() async {
+  Future<void> like() async {
     if (!checkIfLiked()) {
       await BlogQuery().addLike(widget.blog).then((_) {
         setState(() {
@@ -345,5 +325,25 @@ class _ReadBlogPageState extends State<ReadBlogPage> {
         BlogzErrorSnackbar(context).showSnackBar(error.toString());
       });
     }
+  }
+
+  Future<void> loadAuthorImage() async {
+    _authorImageUrl = await UserQuery().getImageByUsername(widget.blog.author);
+  }
+
+  Future<void> newComment() async {
+    final comment = Comment(
+        content: _textEditingController.text,
+        author: SharedPrefs().getCurrentUser()!,
+        uuid: widget.blog.uuid,
+        date: DateTime.now());
+    CommentQuery().addComment(comment).then((_) {
+      setState(() {
+        _comments.insert(0, comment);
+        _textEditingController.clear();
+      });
+    }).catchError((error) {
+      BlogzErrorSnackbar(context).showSnackBar(error.toString());
+    });
   }
 }
